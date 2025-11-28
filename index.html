@@ -190,6 +190,12 @@
             font-size: 15px;
             font-weight: 600;
         }
+        .rules h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 15px;
+            font-weight: 600;
+        }
         .rules ul {
             margin: 10px 0;
             padding-left: 20px;
@@ -259,6 +265,10 @@
                 <li>相手が共円を作ったと思ったら「指摘」ボタンを押します</li>
                 <li>「ヒント」ボタンで置いたら共円になるマスに×が表示されます</li>
                 <li>終局時にはその時出来た共円を作ったプレイヤーの色、<br>指摘されていない共円をグレーで表示します</li>
+            </ul>
+            <h4>注意</h4>
+            <ul>
+                <li>置いた点が多すぎるとページがクラッシュすることがあります</li>
             </ul>
         </div>
     </div>
@@ -361,38 +371,42 @@
             isShowingMessage = true;
             const lastStone = stones[stones.length - 1];
             const loserPlayer = lastStone.player;
-            const winner = loserPlayer === 1 ? 2 : 1;
+            const claimer = loserPlayer === 1 ? 2 : 1;
             const cocircular = checkCocircularForStones(stones, lastStone);
             
             if (cocircular) {
                 gameOver = true;
+                const winner = claimer;
                 const winnerClass = winner === 1 ? 'player1' : 'player2';
                 const loserColor = loserPlayer === 1 ? '#d63447' : '#4a7c99';
-
+        
                 const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
-
                 drawUnclaimedCocirculars(allNewCocirculars);
-
                 allNewCocirculars.forEach(cocirc => {
                     drawCircle(cocirc, loserColor, 5);
                 });
-
+        
                 showMessageOverlay('共円！', loserColor);
                 
                 setTimeout(() => {
-                    infoDiv.innerHTML = `<span class="gameover"><span class="${winnerClass}">プレイヤー${winner}の勝ち！</span></span>`;
+                    infoDiv.innerHTML = `<span class="gameover"><span class="${winnerClass}">プレイヤー${winner}の勝ち!</span></span>`;
                     updateCocircularButton();
                     updateUndoButton();
                     updateHintButton();
                     isShowingMessage = false;
                 }, 2000);
             } else {
+                gameOver = true;
+                const winner = loserPlayer;
+                const winnerClass = winner === 1 ? 'player1' : 'player2';
+                
                 showMessageOverlay('Not 共円…', '#999');
                 
                 setTimeout(() => {
-                    if (!gameOver) {
-                        updateInfo();
-                    }
+                    infoDiv.innerHTML = `<span class="gameover"><span class="${winnerClass}">プレイヤー${winner}の勝ち!</span></span>`;
+                    updateCocircularButton();
+                    updateUndoButton();
+                    updateHintButton();
                     isShowingMessage = false;
                 }, 2000);
             }
@@ -401,14 +415,13 @@
         function findAllCocircularsWithStone(stoneArray, requiredStone) {
             const n = stoneArray.length;
             if (n < 4) return [];
-            
-            const maxN = Math.min(n, 20);
+
             const cocirculars = [];
             
-            for (let i = 0; i < maxN; i++) {
-                for (let j = i + 1; j < maxN; j++) {
-                    for (let k = j + 1; k < maxN; k++) {
-                        for (let l = k + 1; l < maxN; l++) {
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    for (let k = j + 1; k < n; k++) {
+                        for (let l = k + 1; l < n; l++) {
                             const points = [stoneArray[i], stoneArray[j], stoneArray[k], stoneArray[l]];
                             
                             const hasRequired = points.some(p => 
@@ -452,12 +465,10 @@
             const n = stones.length;
             if (n < 4) return;
             
-            const maxN = Math.min(n, 20);
-            
-            for (let i = 0; i < maxN; i++) {
-                for (let j = i + 1; j < maxN; j++) {
-                    for (let k = j + 1; k < maxN; k++) {
-                        for (let l = k + 1; l < maxN; l++) {
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    for (let k = j + 1; k < n; k++) {
+                        for (let l = k + 1; l < n; l++) {
                             const points = [stones[i], stones[j], stones[k], stones[l]];
                             
                             const isSameCocircular = claimedCocirculars.some(claimed => 
@@ -598,12 +609,10 @@
             const n = stoneArray.length;
             if (n < 4) return null;
             
-            const maxN = Math.min(n, 20);
-            
-            for (let i = 0; i < maxN; i++) {
-                for (let j = i + 1; j < maxN; j++) {
-                    for (let k = j + 1; k < maxN; k++) {
-                        for (let l = k + 1; l < maxN; l++) {
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    for (let k = j + 1; k < n; k++) {
+                        for (let l = k + 1; l < n; l++) {
                             const points = [stoneArray[i], stoneArray[j], stoneArray[k], stoneArray[l]];
 
                             if (requiredStone !== null) {
