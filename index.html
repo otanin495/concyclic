@@ -399,6 +399,8 @@
                 gameOver = true;
                 const winner = loserPlayer;
                 const winnerClass = winner === 1 ? 'player1' : 'player2';
+
+                drawUnclaimedCocirculars([]);
                 
                 showMessageOverlay('Not 共円…', '#999');
                 
