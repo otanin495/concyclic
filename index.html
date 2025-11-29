@@ -78,6 +78,15 @@
             background: #e0e0e0 !important;
             color: #999 !important;
         }
+        select {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            background: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
         .board-container {
             display: flex;
             justify-content: center;
@@ -265,6 +274,10 @@
                 padding: 7px 14px;
                 font-size: 12px;
             }
+            select {
+                padding: 7px 10px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -273,6 +286,12 @@
         <h1>共円</h1>
         
         <div class="controls">
+            <select id="gameModeSelect" onchange="changeGameMode()">
+                <option value="pvp">2人対戦</option>
+                <option value="ai-first">AIと対戦(あなたが先手)</option>
+                <option value="ai-second">AIと対戦(あなたが後手)</option>
+                <option value="solo">1人で黙々</option>
+            </select>
             <label>盤のサイズ:</label>
             <input type="number" id="gridSizeInput" value="7" min="4" max="32" 
                    style="width: 60px; padding: 6px 8px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px;">
@@ -323,6 +342,7 @@
         let gameOver = false;
         let showHint = false;
         let isShowingMessage = false;
+        let gameMode = 'pvp';
         
         function updateGridSizeFromInput() {
             const input = document.getElementById('gridSizeInput');
@@ -341,6 +361,11 @@
         document.getElementById('gridSizeInput').addEventListener('change', updateGridSizeFromInput);
         document.getElementById('gridSizeInput').addEventListener('blur', updateGridSizeFromInput);
         
+        function changeGameMode() {
+            gameMode = document.getElementById('gameModeSelect').value;
+            initGame();
+        }
+        
         function initGame() {
             stones = [];
             history = [];
@@ -356,14 +381,51 @@
             hintBtn.classList.remove('active');
             drawBoard();
             updateInfo();
+
+            if (gameMode === 'ai-second') {
+                setTimeout(aiMove, 500);
+            }
+        }
+        
+        function aiMove() {
+            if (gameOver) return;
+            
+            const emptyCells = [];
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    if (!stones.some(s => s.x === x && s.y === y)) {
+                        emptyCells.push({ x, y });
+                    }
+                }
+            }
+            
+            if (emptyCells.length === 0) return;
+
+            const safeMoves = emptyCells.filter(cell => {
+                const testStones = [...stones, { x: cell.x, y: cell.y, player: currentPlayer }];
+                const testStone = { x: cell.x, y: cell.y, player: currentPlayer };
+                return !checkCocircularForStones(testStones, testStone);
+            });
+
+            const candidates = safeMoves.length > 0 ? safeMoves : emptyCells;
+            const move = candidates[Math.floor(Math.random() * candidates.length)];
+            
+            handleCellClick(move.x, move.y, true);
         }
         
         function undo() {
             if (history.length === 0 || gameOver) return;
+
+            if ((gameMode === 'ai-first' || gameMode === 'ai-second') && history.length >= 2) {
+                history.pop();
+                history.pop();
+                stones = history.length > 0 ? JSON.parse(JSON.stringify(history[history.length - 1])) : [];
+            } else if (gameMode === 'solo' || gameMode === 'pvp') {
+                history.pop();
+                stones = history.length > 0 ? JSON.parse(JSON.stringify(history[history.length - 1])) : [];
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+            }
             
-            history.pop();
-            stones = history.length > 0 ? JSON.parse(JSON.stringify(history[history.length - 1])) : [];
-            currentPlayer = currentPlayer === 1 ? 2 : 1;
             updateUndoButton();
             updateCocircularButton();
             drawBoard();
@@ -377,7 +439,7 @@
         
         function updateCocircularButton() {
             const cocircularBtn = document.getElementById('cocircularBtn');
-            cocircularBtn.disabled = stones.length === 0 || gameOver;
+            cocircularBtn.disabled = stones.length === 0 || gameOver || gameMode === 'solo';
         }
         
         function updateHintButton() {
@@ -399,7 +461,7 @@
         }
         
         function checkCocircularClaim() {
-            if (stones.length === 0 || gameOver || isShowingMessage) return;
+            if (stones.length === 0 || gameOver || isShowingMessage || gameMode === 'solo') return;
             
             isShowingMessage = true;
             const lastStone = stones[stones.length - 1];
@@ -410,36 +472,70 @@
             if (cocircular) {
                 gameOver = true;
                 const winner = claimer;
-                const winnerClass = winner === 1 ? 'player1' : 'player2';
                 const loserColor = loserPlayer === 1 ? '#d63447' : '#4a7c99';
-        
+
+                showHint = false;
+                const hintBtn = document.getElementById('hintBtn');
+                hintBtn.textContent = 'ヒント';
+                hintBtn.classList.remove('active');
+                
+                drawBoard();
+                
                 const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
                 drawUnclaimedCocirculars(allNewCocirculars);
                 allNewCocirculars.forEach(cocirc => {
                     drawCircle(cocirc, loserColor, 5);
                 });
                 showMessageOverlay('共円！', loserColor);
-                infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
+
+                if (gameMode === 'ai-first' || gameMode === 'ai-second') {
+                    const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
+                    const aiPlayer = humanPlayer === 1 ? 2 : 1;
+
+                    if (loserPlayer === aiPlayer) {
+                        infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div>`;
+                    } else {
+                        infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div>`;
+                    }
+                } else {
+                    infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
+                }
+                
                 updateCocircularButton();
                 updateUndoButton();
                 updateHintButton();
-                const hintBtn = document.getElementById('hintBtn');
-                hintBtn.classList.remove('active');
                 isShowingMessage = false;
             } else {
                 gameOver = true;
                 const winner = loserPlayer;
-                const winnerClass = winner === 1 ? 'player1' : 'player2';
 
+                showHint = false;
+                const hintBtn = document.getElementById('hintBtn');
+                hintBtn.textContent = 'ヒント';
+                hintBtn.classList.remove('active');
+                
+                drawBoard();
+                
                 drawUnclaimedCocirculars([]);
                 
                 showMessageOverlay('Not 共円…', '#999');
-                infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
+
+                if (gameMode === 'ai-first' || gameMode === 'ai-second') {
+                    const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
+                    const aiPlayer = humanPlayer === 1 ? 2 : 1;
+
+                    if (claimer === humanPlayer) {
+                        infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div>`;
+                    } else {
+                        infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div>`;
+                    }
+                } else {
+                    infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
+                }
+                
                 updateCocircularButton();
                 updateUndoButton();
                 updateHintButton();
-                const hintBtn = document.getElementById('hintBtn');
-                hintBtn.classList.remove('active');
                 isShowingMessage = false;
             }
         }
@@ -535,13 +631,19 @@
             board.innerHTML = '';
             svgOverlay.innerHTML = '';
 
+            board.style.setProperty('--grid-size', gridSize);
+            board.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+            board.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+
+            board.offsetHeight;
+            
             const boardRect = board.getBoundingClientRect();
             const cellWidth = boardRect.width / gridSize;
             const cellHeight = boardRect.height / gridSize;
-
+        
             for (let i = 0; i < gridSize; i++) {
                 const pos = i * cellWidth + cellWidth / 2;
-
+        
                 const vLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 vLine.setAttribute('x1', pos);
                 vLine.setAttribute('y1', cellHeight / 2);
@@ -550,7 +652,7 @@
                 vLine.setAttribute('stroke', '#d0d0d0');
                 vLine.setAttribute('stroke-width', '1');
                 svgOverlay.appendChild(vLine);
-
+        
                 const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 hLine.setAttribute('x1', cellWidth / 2);
                 hLine.setAttribute('y1', pos);
@@ -560,7 +662,7 @@
                 hLine.setAttribute('stroke-width', '1');
                 svgOverlay.appendChild(hLine);
             }
-
+        
             for (let y = 0; y < gridSize; y++) {
                 for (let x = 0; x < gridSize; x++) {
                     const dotX = x * cellWidth + cellWidth / 2;
@@ -574,40 +676,42 @@
                     svgOverlay.appendChild(dot);
                 }
             }
-            
-            board.style.setProperty('--grid-size', gridSize);
-            board.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-            board.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
-
+        
             for (let y = 0; y < gridSize; y++) {
                 for (let x = 0; x < gridSize; x++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell';
                     cell.dataset.x = x;
                     cell.dataset.y = y;
-
-                    cell.addEventListener('click', () => handleCellClick(x, y));
-                    
                     board.appendChild(cell);
                 }
             }
-
+        
             stones.forEach(stone => {
                 const stoneX = stone.x * cellWidth + cellWidth / 2;
                 const stoneY = stone.y * cellHeight + cellHeight / 2;
                 const stoneRadius = Math.min(10, cellWidth * 0.16);
+
+                let fillColor, strokeColor;
+                if (gameMode === 'solo') {
+                    fillColor = '#4a7c99';
+                    strokeColor = '#3d6a85';
+                } else {
+                    fillColor = stone.player === 1 ? '#d63447' : '#4a7c99';
+                    strokeColor = stone.player === 1 ? '#c02a3a' : '#3d6a85';
+                }
                 
                 const stoneCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 stoneCircle.setAttribute('cx', stoneX);
                 stoneCircle.setAttribute('cy', stoneY);
                 stoneCircle.setAttribute('r', stoneRadius);
-                stoneCircle.setAttribute('fill', stone.player === 1 ? '#d63447' : '#4a7c99');
-                stoneCircle.setAttribute('stroke', stone.player === 1 ? '#c02a3a' : '#3d6a85');
+                stoneCircle.setAttribute('fill', fillColor);
+                stoneCircle.setAttribute('stroke', strokeColor);
                 stoneCircle.setAttribute('stroke-width', '2');
                 stoneCircle.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))';
                 svgOverlay.appendChild(stoneCircle);
             });
-
+        
             if (showHint && !gameOver) {
                 for (let y = 0; y < gridSize; y++) {
                     for (let x = 0; x < gridSize; x++) {
@@ -621,7 +725,7 @@
                             const hintX = x * cellWidth + cellWidth / 2;
                             const hintY = y * cellHeight + cellHeight / 2;
                             const crossSize = Math.min(8, cellWidth * 0.13);
-
+        
                             const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                             line1.setAttribute('x1', hintX - crossSize);
                             line1.setAttribute('y1', hintY - crossSize);
@@ -630,7 +734,7 @@
                             line1.setAttribute('stroke', '#333');
                             line1.setAttribute('stroke-width', '2');
                             svgOverlay.appendChild(line1);
-
+        
                             const line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                             line2.setAttribute('x1', hintX + crossSize);
                             line2.setAttribute('y1', hintY - crossSize);
@@ -645,18 +749,82 @@
             }
         }
         
-        function handleCellClick(x, y) {
+        function handleCellClick(x, y, isAIMove = false) {
             if (gameOver || isShowingMessage) return;
             if (stones.some(s => s.x === x && s.y === y)) return;
+
+            if (!isAIMove) {
+                if (gameMode === 'ai-first' && currentPlayer === 2) return;
+                if (gameMode === 'ai-second' && currentPlayer === 1) return;
+            }
+            
+            const playingPlayer = currentPlayer;
             
             stones.push({ x, y, player: currentPlayer });
             history.push(JSON.parse(JSON.stringify(stones)));
             updateUndoButton();
             updateCocircularButton();
+
+            const lastStone = stones[stones.length - 1];
+            const cocircular = checkCocircularForStones(stones, lastStone);
+
+            if (gameMode === 'solo' && cocircular) {
+                gameOver = true;
+                const loserColor = '#4a7c99';
+                const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
+
+                drawBoard();
+
+                drawUnclaimedCocirculars(allNewCocirculars);
+                allNewCocirculars.forEach(cocirc => {
+                    drawCircle(cocirc, loserColor, 5);
+                });
+                
+                showMessageOverlay('共円！', loserColor);
+                infoDiv.innerHTML = `<div class="gameover" style="color: #4a7c99;">ゲーム終了</div>`;
+                updateCocircularButton();
+                updateUndoButton();
+                updateHintButton();
+                const hintBtn = document.getElementById('hintBtn');
+                hintBtn.classList.remove('active');
+                return;
+            }
+
+            if ((gameMode === 'ai-first' || gameMode === 'ai-second') && cocircular) {
+                const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
+                
+                if (playingPlayer === humanPlayer) {
+                    gameOver = true;
+                    const loserColor = humanPlayer === 1 ? '#d63447' : '#4a7c99';
+                    const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
+                    
+                    drawBoard();
+                    drawUnclaimedCocirculars(allNewCocirculars);
+                    allNewCocirculars.forEach(cocirc => {
+                        drawCircle(cocirc, loserColor, 5);
+                    });
+                    
+                    showMessageOverlay('共円！', loserColor);
+                    infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer === 1 ? '2' : '1'}">AIの勝ち</div>`;
+                    
+                    updateCocircularButton();
+                    updateUndoButton();
+                    updateHintButton();
+                    const hintBtn = document.getElementById('hintBtn');
+                    hintBtn.classList.remove('active');
+                    return;
+                }
+            }
+
             drawBoard();
-            
+
             currentPlayer = currentPlayer === 1 ? 2 : 1;
             updateInfo();
+
+            if ((gameMode === 'ai-first' && currentPlayer === 2) || 
+                (gameMode === 'ai-second' && currentPlayer === 1)) {
+                setTimeout(aiMove, 500);
+            }
         }
         
         function updateInfo() {
@@ -665,8 +833,19 @@
                 const winnerClass = winner === 1 ? 'player1' : 'player2';
                 infoDiv.innerHTML = `<span class="${winnerClass}">プレイヤー${winner}の勝ち！</span>`;
             } else {
-                const playerClass = currentPlayer === 1 ? 'player1' : 'player2';
-                infoDiv.innerHTML = `<span class="${playerClass}">プレイヤー${currentPlayer}</span>のターン`;
+                if (gameMode === 'solo') {
+                    infoDiv.innerHTML = `<span class="player1">手を打ってください</span>`;
+                } else {
+                    const playerClass = currentPlayer === 1 ? 'player1' : 'player2';
+                    let playerName = `プレイヤー${currentPlayer}`;
+                    
+                    if ((gameMode === 'ai-first' && currentPlayer === 2) || 
+                        (gameMode === 'ai-second' && currentPlayer === 1)) {
+                        playerName = 'AI';
+                    }
+                    
+                    infoDiv.innerHTML = `<span class="${playerClass}">${playerName}</span>のターン`;
+                }
             }
         }
         
@@ -840,8 +1019,34 @@
                 svgOverlay.appendChild(circleEl);
             }
         }
+
+        board.addEventListener('click', (e) => {
+            if (gameOver || isShowingMessage) return;
+            
+            const boardRect = board.getBoundingClientRect();
+            const cellWidth = boardRect.width / gridSize;
+            const cellHeight = boardRect.height / gridSize;
+
+            const clickX = e.clientX - boardRect.left;
+            const clickY = e.clientY - boardRect.top;
+
+            const gridX = Math.round((clickX - cellWidth / 2) / cellWidth);
+            const gridY = Math.round((clickY - cellHeight / 2) / cellHeight);
+
+            if (gridX >= 0 && gridX < gridSize && gridY >= 0 && gridY < gridSize) {
+                handleCellClick(gridX, gridY, false);
+            }
+        });
         
         initGame();
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                drawBoard();
+            }, 100);
+        });
     </script>
 </body>
 </html>
