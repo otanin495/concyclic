@@ -839,16 +839,20 @@
             } else {
                 if (gameMode === 'solo') {
                     infoDiv.innerHTML = `<span class="player1">手を打ってください</span>`;
+                } else if (gameMode === 'ai-first' || gameMode === 'ai-second') {
+                    const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
+                    const aiPlayer = humanPlayer === 1 ? 2 : 1;
+                    
+                    if (currentPlayer === humanPlayer) {
+                        const playerClass = humanPlayer === 1 ? 'player1' : 'player2';
+                        infoDiv.innerHTML = `<span class="${playerClass}">あなた</span>の番です`;
+                    } else {
+                        const playerClass = aiPlayer === 1 ? 'player1' : 'player2';
+                        infoDiv.innerHTML = `<span class="${playerClass}">AI</span>の番です`;
+                    }
                 } else {
                     const playerClass = currentPlayer === 1 ? 'player1' : 'player2';
-                    let playerName = `プレイヤー${currentPlayer}`;
-                    
-                    if ((gameMode === 'ai-first' && currentPlayer === 2) || 
-                        (gameMode === 'ai-second' && currentPlayer === 1)) {
-                        playerName = 'AI';
-                    }
-                    
-                    infoDiv.innerHTML = `<span class="${playerClass}">${playerName}</span>のターン`;
+                    infoDiv.innerHTML = `<span class="${playerClass}">プレイヤー${currentPlayer}</span>のターン`;
                 }
             }
         }
