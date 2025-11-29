@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://otanin495.github.io/concyclic/sitemap.xml
