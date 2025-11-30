@@ -917,7 +917,7 @@
         
             const lastStone = stones[stones.length - 1];
             const cocircular = checkCocircularForStones(stones, lastStone);
-
+        
             if (gameMode === 'solo' && cocircular) {
                 isShowingMessage = true;
                 updateInfo();
@@ -925,9 +925,9 @@
                 gameOver = true;
                 const loserColor = '#4a7c99';
                 const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
-
+        
                 drawBoard();
-
+        
                 drawUnclaimedCocirculars(allNewCocirculars);
                 allNewCocirculars.forEach(cocirc => {
                     drawCircle(cocirc, loserColor, 5);
@@ -946,7 +946,7 @@
                 hintBtn.classList.remove('active');
                 return;
             }
-
+        
             if ((gameMode === 'ai-first' || gameMode === 'ai-second') && cocircular) {
                 const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                 
@@ -978,8 +978,10 @@
                     return;
                 }
             }
-        
-            drawBoard();
+
+            if (!gameOver) {
+                drawBoard();
+            }
         
             currentPlayer = currentPlayer === 1 ? 2 : 1;
             updateInfo();
