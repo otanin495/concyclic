@@ -442,7 +442,7 @@
                     <ul>
                         <li>4点が同一円周上にあるかどうかは<strong>複比(cross-ratio)</strong>という数学の公式で判定しています</li>
                         <li>複比が実数になれば共円、虚数部分があれば共円ではありません</li>
-                        <li>この方法なら直線も円の一種（半径無限大）として扱えます</li>
+                        <li>この方法なら直線も円の一種（半径無限大）として扱える…はず…</li>
                         <li>計算精度は小数点以下9桁まで考慮しています</li>
                     </ul>
                     <br>
@@ -1127,9 +1127,10 @@
             const lastPlayer = stones.length > 0 ? stones[stones.length - 1].player : currentPlayer;
             const playerColor = color || (lastPlayer === 1 ? 'rgba(214, 52, 71, 0.7)' : 'rgba(74, 124, 153, 0.7)');
             
-            const svgRect = svgOverlay.getBoundingClientRect();
-            const cellWidth = svgRect.width / gridSize;
-            const cellHeight = svgRect.height / gridSize;
+            const svgWidth = svgOverlay.clientWidth;
+            const svgHeight = svgOverlay.clientHeight;
+            const cellWidth = svgWidth / gridSize;
+            const cellHeight = svgHeight / gridSize;
             
             if (cocircular.type === 'line') {
                 const points = cocircular.points;
