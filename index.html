@@ -432,10 +432,10 @@
                     <ul>
                         <li>同一円周上に4点以上の石が乗る配置(共円)を作ってはいけません</li>
                         <li>同一直線上に4点も共円と見なします(半径無限の円)</li>
-                        <li>ただし共円を作っても相手に指摘されなければセーフ。<br>次の手が打たれると共円は無効になります</li>
+                        <li>ただし共円を作っても相手に指摘されなければセーフ。</li>
                         <li>相手が共円を作ったと思ったら「指摘」ボタンを押します</li>
-                        <li>「ヒント」ボタンで石を置いたら共円になるマスに×が表示されます</li>
-                        <li>終局時にはその時出来た共円を作ったプレイヤーの色、</br>指摘されていない共円をグレーで表示します</li>
+                        <li>２人で対戦、１人で黙々モードのみ「ヒント」ボタンで石を置いたら共円になるマスに×が表示されます</li>
+                        <li>終局時にはその時出来た共円を作ったプレイヤーの色、指摘されていない共円をグレーで表示します</li>
                     </ul>
                     <br>
                     <h4>共円の判定方法</h4>
@@ -448,7 +448,7 @@
                     <br>
                     <h4>注意</h4>
                     <ul>
-                        <li>このゲームはClaude(Anthropic)を利用して作成しました</li>
+                        <li>このゲームは<strong>Claude(Anthropic)</strong>を利用して作成しました</li>
                         <li>置いた石が多すぎるとページがクラッシュすることがあります<br>
                         すみません</li>
                         <li>プログラミング初心者なので至らないところがあると思いますがどうかお許しください<br>
@@ -518,9 +518,14 @@
             const hintBtn = document.getElementById('hintBtn');
             hintBtn.textContent = 'ヒント';
             hintBtn.classList.remove('active');
+            const detailsDiv = document.getElementById('cocircularDetails');
+            detailsDiv.style.display = 'none';
+            const listDiv = document.getElementById('cocircularList');
+            listDiv.innerHTML = '';
+            
             drawBoard();
             updateInfo();
-
+        
             if (gameMode === 'ai-second') {
                 setTimeout(aiMove, 500);
             }
