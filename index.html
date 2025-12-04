@@ -385,6 +385,74 @@
             }
         }
 
+        .max-stones-table {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e8e9eb;
+        }
+        
+        .max-stones-table h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .max-stones-table p {
+            margin: 0 0 15px 0;
+            line-height: 1.7;
+            color: #555;
+            font-size: 13px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        .max-stones-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .max-stones-table th,
+        .max-stones-table td {
+            padding: 8px 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .max-stones-table th {
+            background: #5b7c99;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .max-stones-table tbody tr:nth-child(even) {
+            background: #fafafa;
+        }
+        
+        .max-stones-table tbody tr:hover {
+            background: #f0f0f0;
+        }
+        
+        @media (max-width: 768px) {
+            .max-stones-table table {
+                font-size: 11px;
+            }
+            
+            .max-stones-table th,
+            .max-stones-table td {
+                padding: 6px 4px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -440,10 +508,11 @@
                     <br>
                     <h4>共円の判定方法</h4>
                     <ul>
-                        <li>4点が同一円周上にあるかどうかは<strong>複比(cross-ratio)</strong>という数学の公式で判定しています</li>
-                        <li>複比が実数になれば共円、虚数部分があれば共円ではありません</li>
-                        <li>この方法なら直線も円の一種（半径無限大）として扱える…はず…</li>
-                        <li>計算精度は小数点以下9桁まで考慮しています</li>
+                        <li>4点が同一円周上にあるかどうかは複素数で判定しています</li>
+                        <li>詳しいことは省きますが、複比を求めそれが実数ならば共円、<br>虚数ならば共円ではないとしています<br>
+                            これなら直線も共円判定を統一的に扱える…はず</li>
+                        <li>オーダーは小数点以下9桁まで考慮しています</li>
+                        <li>試合終了後、判定の詳細を下部に表示します</li>
                     </ul>
                     <br>
                     <h4>注意</h4>
@@ -455,6 +524,77 @@
                             判定とか間違ってないかな？と怯えております<br>
                             合っていると信じたい…</li>
                     </ul>
+                </div>
+                
+                <div class="max-stones-table">
+                    <h3>各盤サイズの最大配置数</h3>
+                    <p>ざっと計算した共円を作らずに配置できる石の最大個数です。<br>ランダム配置による計算結果のため、理論上の最大値とは異なる可能性があります。<br>良かったら最大個数を目指してみてください。</p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>盤サイズ</th>
+                                    <th>最大個数</th>
+                                    <th>盤サイズ</th>
+                                    <th>最大個数</th>
+                                    <th>盤サイズ</th>
+                                    <th>最大個数</th>
+                                    <th>盤サイズ</th>
+                                    <th>最大個数</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>4×4</td><td>7個</td>
+                                    <td>12×12</td><td>21個</td>
+                                    <td>20×20</td><td>33個</td>
+                                    <td>28×28</td><td>44個</td>
+                                </tr>
+                                <tr>
+                                    <td>5×5</td><td>9個</td>
+                                    <td>13×13</td><td>23個</td>
+                                    <td>21×21</td><td>34個</td>
+                                    <td>29×29</td><td>45個</td>
+                                </tr>
+                                <tr>
+                                    <td>6×6</td><td>11個</td>
+                                    <td>14×14</td><td>24個</td>
+                                    <td>22×22</td><td>35個</td>
+                                    <td>30×30</td><td>46個</td>
+                                </tr>
+                                <tr>
+                                    <td>7×7</td><td>14個</td>
+                                    <td>15×15</td><td>26個</td>
+                                    <td>23×23</td><td>38個</td>
+                                    <td>31×31</td><td>48個</td>
+                                </tr>
+                                <tr>
+                                    <td>8×8</td><td>15個</td>
+                                    <td>16×16</td><td>27個</td>
+                                    <td>24×24</td><td>39個</td>
+                                    <td>32×32</td><td>49個</td>
+                                </tr>
+                                <tr>
+                                    <td>9×9</td><td>17個</td>
+                                    <td>17×17</td><td>28個</td>
+                                    <td>25×25</td><td>39個</td>
+                                    <td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>10×10</td><td>19個</td>
+                                    <td>18×18</td><td>30個</td>
+                                    <td>26×26</td><td>40個</td>
+                                    <td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>11×11</td><td>20個</td>
+                                    <td>19×19</td><td>32個</td>
+                                    <td>27×27</td><td>42個</td>
+                                    <td></td><td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 
                 <div id="cocircularDetails">
@@ -478,6 +618,8 @@
         let showHint = false;
         let isShowingMessage = false;
         let gameMode = 'pvp';
+        let savedCocirculars = [];
+        let savedLoserColor = null;
         
         function updateGridSizeFromInput() {
             const input = document.getElementById('gridSizeInput');
@@ -506,12 +648,25 @@
         }
         
         function initGame() {
+            const existingOverlay = document.querySelector('.message-overlay');
+            if (existingOverlay) {
+                if (existingOverlay.fadeTimeoutId) {
+                    clearTimeout(existingOverlay.fadeTimeoutId);
+                }
+                if (existingOverlay.removeTimeoutId) {
+                    clearTimeout(existingOverlay.removeTimeoutId);
+                }
+                existingOverlay.remove();
+            }
+            
             stones = [];
             history = [];
             currentPlayer = 1;
             gameOver = false;
             showHint = false;
             isShowingMessage = false;
+            savedCocirculars = [];
+            savedLoserColor = null;
             updateUndoButton();
             updateCocircularButton();
             updateHintButton();
@@ -521,7 +676,8 @@
             const detailsDiv = document.getElementById('cocircularDetails');
             detailsDiv.style.display = 'none';
             const listDiv = document.getElementById('cocircularList');
-            listDiv.innerHTML = '';
+            listDiv.innerHTML = '';    
+            infoDiv.innerHTML = '';
             
             drawBoard();
             updateInfo();
@@ -529,6 +685,7 @@
             if (gameMode === 'ai-second') {
                 setTimeout(aiMove, 500);
             }
+            localStorage.removeItem('kyouen_game_state');
         }
         
         function aiMove() {
@@ -574,6 +731,7 @@
             updateCocircularButton();
             drawBoard();
             updateInfo();
+            saveGameState();
         }
         
         function updateUndoButton() {
@@ -618,7 +776,7 @@
                 gameOver = true;
                 const winner = claimer;
                 const loserColor = loserPlayer === 1 ? '#d63447' : '#4a7c99';
-        
+            
                 showHint = false;
                 const hintBtn = document.getElementById('hintBtn');
                 hintBtn.textContent = 'ヒント';
@@ -627,25 +785,37 @@
                 drawBoard();
                 
                 const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
+                savedCocirculars = allNewCocirculars;
+                savedLoserColor = loserColor;
+                
                 drawUnclaimedCocirculars(allNewCocirculars);
                 allNewCocirculars.forEach(cocirc => {
                     drawCircle(cocirc, loserColor, 5);
                 });
                 
                 showMessageOverlay('共円！', loserColor, () => {
+                    if (!gameOver) return;
+                    
+                    drawBoard();
+                    drawUnclaimedCocirculars(allNewCocirculars);
+                    allNewCocirculars.forEach(cocirc => {
+                        drawCircle(cocirc, loserColor, 5);
+                    });
+            
+                    const finalStoneCount = stones.length;
                     if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                         const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                         const aiPlayer = humanPlayer === 1 ? 2 : 1;
-                
+
                         if (loserPlayer === aiPlayer) {
-                            infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div>`;
+                            infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
                         } else {
-                            infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div>`;
+                            infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
                         }
                     } else {
-                        infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
+                        infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
                     }
-
+            
                     displayCocircularDetails(allNewCocirculars);
                     
                     isShowingMessage = false;
@@ -668,17 +838,20 @@
                 drawUnclaimedCocirculars([]);
                 
                 showMessageOverlay('Not 共円…', '#999', () => {
+
+                    drawBoard();
+                    const finalStoneCount = stones.length;
                     if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                         const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                         const aiPlayer = humanPlayer === 1 ? 2 : 1;
-        
+
                         if (claimer === humanPlayer) {
-                            infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div>`;
+                            infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
                         } else {
-                            infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div>`;
+                            infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
                         }
                     } else {
-                        infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
+                        infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
                     }
                     isShowingMessage = false;
                 });
@@ -731,14 +904,16 @@
             overlay.style.border = `4px solid ${color}`;
             overlay.textContent = message;
             document.body.appendChild(overlay);
-            
-            setTimeout(() => {
+
+            const fadeTimeout = setTimeout(() => {
                 overlay.classList.add('fade-out');
-                setTimeout(() => {
+                const removeTimeout = setTimeout(() => {
                     overlay.remove();
-                    if (callback) callback();
+                    if (callback && gameOver) callback();
                 }, 300);
+                overlay.removeTimeoutId = removeTimeout;
             }, 1700);
+            overlay.fadeTimeoutId = fadeTimeout;
         }
         
         function drawUnclaimedCocirculars(claimedCocirculars) {
@@ -925,16 +1100,28 @@
                 gameOver = true;
                 const loserColor = '#4a7c99';
                 const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
-        
+                
+                savedCocirculars = allNewCocirculars;
+                savedLoserColor = loserColor;
+            
                 drawBoard();
-        
+            
                 drawUnclaimedCocirculars(allNewCocirculars);
                 allNewCocirculars.forEach(cocirc => {
                     drawCircle(cocirc, loserColor, 5);
                 });
                 
                 showMessageOverlay('共円！', loserColor, () => {
-                    infoDiv.innerHTML = `<div class="winner-message winner2">ゲーム終了</div>`;
+                    if (!gameOver) return;
+                    
+                    drawBoard();
+                    drawUnclaimedCocirculars(allNewCocirculars);
+                    allNewCocirculars.forEach(cocirc => {
+                        drawCircle(cocirc, loserColor, 5);
+                    });
+                    
+                    const finalStoneCount = stones.length;
+                    infoDiv.innerHTML = `<div class="winner-message winner2">ゲーム終了</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
                     displayCocircularDetails(allNewCocirculars);
                     isShowingMessage = false;
                 });
@@ -958,6 +1145,9 @@
                     const loserColor = humanPlayer === 1 ? '#d63447' : '#4a7c99';
                     const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
                     
+                    savedCocirculars = allNewCocirculars;
+                    savedLoserColor = loserColor;
+                    
                     drawBoard();
                     drawUnclaimedCocirculars(allNewCocirculars);
                     allNewCocirculars.forEach(cocirc => {
@@ -965,7 +1155,16 @@
                     });
                     
                     showMessageOverlay('共円！', loserColor, () => {
-                        infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer === 1 ? '2' : '1'}">AIの勝ち</div>`;
+                        if (!gameOver) return;
+                        
+                        drawBoard();
+                        drawUnclaimedCocirculars(allNewCocirculars);
+                        allNewCocirculars.forEach(cocirc => {
+                            drawCircle(cocirc, loserColor, 5);
+                        });
+                        
+                        const finalStoneCount = stones.length;
+                        infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer === 1 ? '2' : '1'}">AIの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
                         displayCocircularDetails(allNewCocirculars);
                         isShowingMessage = false;
                     });
@@ -990,6 +1189,7 @@
                 (gameMode === 'ai-second' && currentPlayer === 1)) {
                 setTimeout(aiMove, 500);
             }
+            saveGameState();
         }
         
         function updateInfo() {
@@ -1004,21 +1204,24 @@
                 infoDiv.innerHTML = `<span class="${winnerClass}">プレイヤー${winner}の勝ち！</span>`;
             } else {
                 if (gameMode === 'solo') {
-                    infoDiv.innerHTML = `<span class="player1">手を打ってください</span>`;
+                    const stoneCount = stones.length;
+                    infoDiv.innerHTML = `<span class="player1">手を打ってください</span><br><span style="font-size: 13px; color: #666;">配置済み: ${stoneCount}個</span>`;
                 } else if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                     const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                     const aiPlayer = humanPlayer === 1 ? 2 : 1;
+                    const stoneCount = stones.length;
                     
                     if (currentPlayer === humanPlayer) {
                         const playerClass = humanPlayer === 1 ? 'player1' : 'player2';
-                        infoDiv.innerHTML = `<span class="${playerClass}">あなた</span>の番です`;
+                        infoDiv.innerHTML = `<span class="${playerClass}">あなた</span>の番です<br><span style="font-size: 13px; color: #666;">配置済み: ${stoneCount}個</span>`;
                     } else {
                         const playerClass = aiPlayer === 1 ? 'player1' : 'player2';
-                        infoDiv.innerHTML = `<span class="${playerClass}">AI</span>の番です`;
+                        infoDiv.innerHTML = `<span class="${playerClass}">AI</span>の番です<br><span style="font-size: 13px; color: #666;">配置済み: ${stoneCount}個</span>`;
                     }
                 } else {
                     const playerClass = currentPlayer === 1 ? 'player1' : 'player2';
-                    infoDiv.innerHTML = `<span class="${playerClass}">プレイヤー${currentPlayer}</span>のターン`;
+                    const stoneCount = stones.length;
+                    infoDiv.innerHTML = `<span class="${playerClass}">プレイヤー${currentPlayer}</span>のターン<br><span style="font-size: 13px; color: #666;">配置済み: ${stoneCount}個</span>`;
                 }
             }
         }
@@ -1213,6 +1416,13 @@
             }
         });
 
+        document.getElementById('gridSizeInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                updateGridSizeFromInput();
+                initGame();
+            }
+        });
+
         function getCrossRatioDetails(points) {
             const [p1, p2, p3, p4] = points.map(toComplex);
             
@@ -1262,7 +1472,7 @@
                 itemDiv.className = 'cocircular-item';
                 
                 const typeText = cocirc.type === 'line' ? '直線(半径無限大の円)' : '円';
-                const pointsText = points.map(p => `(${p.x}, ${p.y})`).join(', ');
+                const pointsText = points.map(p => `(${p.x}＋${p.y}i)`).join(', ');
                 
                 itemDiv.innerHTML = `
                     <h4>共円${index + 1}: ${typeText}</h4>
@@ -1283,15 +1493,84 @@
                 listDiv.appendChild(itemDiv);
             });
         }
+
+        function saveGameState() {
+            const state = {
+                gameMode: gameMode,
+                gridSize: gridSize,
+                stones: stones,
+                history: history,
+                currentPlayer: currentPlayer,
+                gameOver: gameOver,
+                showHint: showHint,
+                savedCocirculars: savedCocirculars,
+                savedLoserColor: savedLoserColor
+            };
+            localStorage.setItem('kyouen_game_state', JSON.stringify(state));
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('kyouen_game_state');
+            if (!saved) return false;
+            
+            try {
+                const state = JSON.parse(saved);
+                
+                gameMode = state.gameMode;
+                gridSize = state.gridSize;
+                stones = state.stones;
+                history = state.history;
+                currentPlayer = state.currentPlayer;
+                gameOver = state.gameOver;
+                showHint = state.showHint;
+                savedCocirculars = state.savedCocirculars || [];
+                savedLoserColor = state.savedLoserColor || null;
+
+                document.getElementById('gameModeSelect').value = gameMode;
+                document.getElementById('gridSizeInput').value = gridSize;
+                
+                const hintBtn = document.getElementById('hintBtn');
+                if (showHint) {
+                    hintBtn.textContent = 'ヒント解除';
+                    hintBtn.classList.add('active');
+                } else {
+                    hintBtn.textContent = 'ヒント';
+                    hintBtn.classList.remove('active');
+                }
+                
+                updateUndoButton();
+                updateCocircularButton();
+                updateHintButton();
+                drawBoard();
+
+                if (gameOver && savedCocirculars.length > 0 && savedLoserColor) {
+                    drawUnclaimedCocirculars(savedCocirculars);
+                    savedCocirculars.forEach(cocirc => {
+                        drawCircle(cocirc, savedLoserColor, 5);
+                    });
+                }
+                
+                updateInfo();
+                
+                return true;
+            } catch (e) {
+                console.error('状態の復元に失敗:', e);
+                return false;
+            }
+        }
         
         initGame();
 
         let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                drawBoard();
-            }, 100);
+
+        window.addEventListener('load', function() {
+            if (!loadGameState()) {
+                initGame();
+            }
+        });
+        
+        window.addEventListener('pageshow', function(event) {
+            document.getElementById('gameModeSelect').value = gameMode;
         });
     </script>
 </body>
