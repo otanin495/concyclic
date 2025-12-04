@@ -833,12 +833,28 @@
                 hintBtn.classList.remove('active');
                 
                 drawBoard();
+        
+                const stonesWithoutLast = stones.slice(0, -1);
+                const allExistingCocirculars = stonesWithoutLast.length >= 4 
+                    ? findAllCocircularsWithStone(stones, stonesWithoutLast[0]) 
+                    : [];
+        
+                const unrelatedCocirculars = allExistingCocirculars.filter(cocirc => 
+                    !cocirc.points.some(p => p.x === lastStone.x && p.y === lastStone.y)
+                );
+                
+                savedCocirculars = unrelatedCocirculars;
+                savedLoserColor = '#999';
                 
                 drawUnclaimedCocirculars([]);
                 
                 showMessageOverlay('Not 共円…', '#999', () => {
-
                     drawBoard();
+
+                    unrelatedCocirculars.forEach(cocirc => {
+                        drawCircle(cocirc, '#999', 2);
+                    });
+                    
                     if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                         const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                         const aiPlayer = humanPlayer === 1 ? 2 : 1;
@@ -1540,10 +1556,16 @@
                 drawBoard();
 
                 if (gameOver && savedCocirculars.length > 0 && savedLoserColor) {
-                    drawUnclaimedCocirculars(savedCocirculars);
-                    savedCocirculars.forEach(cocirc => {
-                        drawCircle(cocirc, savedLoserColor, 5);
-                    });
+                    if (savedLoserColor === '#999') {
+                        savedCocirculars.forEach(cocirc => {
+                            drawCircle(cocirc, '#999', 2);
+                        });
+                    } else {
+                        drawUnclaimedCocirculars(savedCocirculars);
+                        savedCocirculars.forEach(cocirc => {
+                            drawCircle(cocirc, savedLoserColor, 5);
+                        });
+                    }
                 }
                 
                 updateInfo();
