@@ -826,19 +826,16 @@
             } else {
                 gameOver = true;
                 const winner = loserPlayer;
-        
+            
                 showHint = false;
                 const hintBtn = document.getElementById('hintBtn');
                 hintBtn.textContent = 'ヒント';
                 hintBtn.classList.remove('active');
                 
                 drawBoard();
-        
-                const stonesWithoutLast = stones.slice(0, -1);
-                const allExistingCocirculars = stonesWithoutLast.length >= 4 
-                    ? findAllCocircularsWithStone(stones, stonesWithoutLast[0]) 
-                    : [];
-        
+            
+                // ★ 修正: 全ての共円を探し、最後の石を含まないものだけをフィルタ
+                const allExistingCocirculars = findAllCocirculars(stones);
                 const unrelatedCocirculars = allExistingCocirculars.filter(cocirc => 
                     !cocirc.points.some(p => p.x === lastStone.x && p.y === lastStone.y)
                 );
@@ -850,7 +847,7 @@
                 
                 showMessageOverlay('Not 共円…', '#999', () => {
                     drawBoard();
-
+            
                     unrelatedCocirculars.forEach(cocirc => {
                         drawCircle(cocirc, '#999', 2);
                     });
@@ -1135,7 +1132,7 @@
                     });
                     
                     const finalStoneCount = stones.length;
-                    infoDiv.innerHTML = `<div class="winner-message winner2">ゲーム終了</div><br><br><span style="font-size: 14px; color: #666;">共円を作らずに配置出来た数数: ${finalStoneCount -1}個</span>`;
+                    infoDiv.innerHTML = `<div class="winner-message winner2">ゲーム終了</div><br><br><span style="font-size: 14px; color: #666;">共円を作らずに配置出来た石数: ${finalStoneCount -1}個</span>`;
                     displayCocircularDetails(allNewCocirculars);
                     isShowingMessage = false;
                 });
@@ -1575,6 +1572,35 @@
                 console.error('状態の復元に失敗:', e);
                 return false;
             }
+        }
+
+        function findAllCocirculars(stoneArray) {
+            const n = stoneArray.length;
+            if (n < 4) return [];
+        
+            const cocirculars = [];
+            
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    for (let k = j + 1; k < n; k++) {
+                        for (let l = k + 1; l < n; l++) {
+                            const points = [stoneArray[i], stoneArray[j], stoneArray[k], stoneArray[l]];
+                            
+                            if (areCocircular(points)) {
+                                if (areCollinearExact(points)) {
+                                    cocirculars.push({ type: 'line', points });
+                                } else {
+                                    const circle = findCircleExact(points[0], points[1], points[2]);
+                                    if (circle) {
+                                        cocirculars.push({ type: 'circle', points, circle });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return cocirculars;
         }
         
         initGame();
