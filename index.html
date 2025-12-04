@@ -528,7 +528,7 @@
                 
                 <div class="max-stones-table">
                     <h3>各盤サイズの最大配置数</h3>
-                    <p>ざっと計算した共円を作らずに配置できる石の最大個数です。<br>ランダム配置による計算結果のため、理論上の最大値とは異なる可能性があります。<br>良かったら最大個数を目指してみてください。</p>
+                    <p>ざっと計算した共円を作らずに配置できる石の最大個数です。<br>ランダム配置による計算結果のため、理論上の最大値とは異なる可能性があります。<br>良かったら１人で黙々モードで最大個数を目指してみてください。</p>
                     <div class="table-wrapper">
                         <table>
                             <thead>
@@ -802,18 +802,17 @@
                         drawCircle(cocirc, loserColor, 5);
                     });
             
-                    const finalStoneCount = stones.length;
                     if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                         const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                         const aiPlayer = humanPlayer === 1 ? 2 : 1;
-
+                    
                         if (loserPlayer === aiPlayer) {
-                            infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
+                            infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div>`;
                         } else {
-                            infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
+                            infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div>`;
                         }
                     } else {
-                        infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
+                        infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
                     }
             
                     displayCocircularDetails(allNewCocirculars);
@@ -840,18 +839,17 @@
                 showMessageOverlay('Not 共円…', '#999', () => {
 
                     drawBoard();
-                    const finalStoneCount = stones.length;
                     if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                         const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                         const aiPlayer = humanPlayer === 1 ? 2 : 1;
-
+                    
                         if (claimer === humanPlayer) {
-                            infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
+                            infoDiv.innerHTML = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div>`;
                         } else {
-                            infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
+                            infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div>`;
                         }
                     } else {
-                        infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
+                        infoDiv.innerHTML = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
                     }
                     isShowingMessage = false;
                 });
@@ -1121,7 +1119,7 @@
                     });
                     
                     const finalStoneCount = stones.length;
-                    infoDiv.innerHTML = `<div class="winner-message winner2">ゲーム終了</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
+                    infoDiv.innerHTML = `<div class="winner-message winner2">ゲーム終了</div><br><br><span style="font-size: 14px; color: #666;">共円を作らずに配置出来た数数: ${finalStoneCount -1}個</span>`;
                     displayCocircularDetails(allNewCocirculars);
                     isShowingMessage = false;
                 });
@@ -1164,7 +1162,7 @@
                         });
                         
                         const finalStoneCount = stones.length;
-                        infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer === 1 ? '2' : '1'}">AIの勝ち</div><br><br><span style="font-size: 14px; color: #666;">配置数: ${finalStoneCount}個</span>`;
+                        infoDiv.innerHTML = `<div class="winner-message winner${humanPlayer === 1 ? '2' : '1'}">AIの勝ち</div>`;
                         displayCocircularDetails(allNewCocirculars);
                         isShowingMessage = false;
                     });
@@ -1209,19 +1207,17 @@
                 } else if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                     const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                     const aiPlayer = humanPlayer === 1 ? 2 : 1;
-                    const stoneCount = stones.length;
                     
                     if (currentPlayer === humanPlayer) {
                         const playerClass = humanPlayer === 1 ? 'player1' : 'player2';
-                        infoDiv.innerHTML = `<span class="${playerClass}">あなた</span>の番です<br><span style="font-size: 13px; color: #666;">配置済み: ${stoneCount}個</span>`;
+                        infoDiv.innerHTML = `<span class="${playerClass}">あなた</span>の番です`;
                     } else {
                         const playerClass = aiPlayer === 1 ? 'player1' : 'player2';
-                        infoDiv.innerHTML = `<span class="${playerClass}">AI</span>の番です<br><span style="font-size: 13px; color: #666;">配置済み: ${stoneCount}個</span>`;
+                        infoDiv.innerHTML = `<span class="${playerClass}">AI</span>の番です`;
                     }
                 } else {
                     const playerClass = currentPlayer === 1 ? 'player1' : 'player2';
-                    const stoneCount = stones.length;
-                    infoDiv.innerHTML = `<span class="${playerClass}">プレイヤー${currentPlayer}</span>のターン<br><span style="font-size: 13px; color: #666;">配置済み: ${stoneCount}個</span>`;
+                    infoDiv.innerHTML = `<span class="${playerClass}">プレイヤー${currentPlayer}</span>のターン`;
                 }
             }
         }
