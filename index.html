@@ -834,7 +834,6 @@
                 
                 drawBoard();
             
-                // ★ 修正: 全ての共円を探し、最後の石を含まないものだけをフィルタ
                 const allExistingCocirculars = findAllCocirculars(stones);
                 const unrelatedCocirculars = allExistingCocirculars.filter(cocirc => 
                     !cocirc.points.some(p => p.x === lastStone.x && p.y === lastStone.y)
@@ -845,7 +844,7 @@
                 
                 drawUnclaimedCocirculars([]);
                 
-                showMessageOverlay('Not 共円…', '#999', () => {
+                showMessageOverlay('No 共円…', '#999', () => {
                     drawBoard();
             
                     unrelatedCocirculars.forEach(cocirc => {
