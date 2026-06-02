@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="9849R7s5wgpxrraEvk32UEm8exJuXwtN3e0FE82VVMI" />
     <title>共円</title>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -297,12 +304,45 @@
             font-size: 13px;
             line-height: 1.8;
             color: #555;
+            overflow: hidden;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .cocircular-item mjx-container[display="true"] {
+            max-width: 100%;
+            overflow: hidden;
+            text-align: left !important;
+            margin: 0 !important;
+        }
+
+        .cocircular-item mjx-container[display="true"] svg {
+            max-width: 100%;
+            height: auto !important;
         }
         
         .cocircular-item h4 {
             margin: 0 0 10px 0;
             color: #2c3e50;
             font-size: 14px;
+        }
+
+        .cocircular-detail-content {
+            margin-left: 14px;
+        }
+
+        .cocircular-zline,
+        .cocircular-ratio,
+        .cocircular-conclusion {
+            margin-top: 6px;
+        }
+
+        .cocircular-ratio {
+            margin-top: 8px;
+        }
+
+        .cocircular-conclusion {
+            margin-top: 8px;
         }
         
         .controls-wrapper {
@@ -394,73 +434,11 @@
             body.details-open .rules {
                 position: static;
             }
-        }
 
-        .max-stones-table {
-            margin-top: 24px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border: 1px solid #e8e9eb;
-        }
-        
-        .max-stones-table h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-size: 15px;
-            font-weight: 600;
-        }
-        
-        .max-stones-table p {
-            margin: 0 0 15px 0;
-            line-height: 1.7;
-            color: #555;
-            font-size: 13px;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-        
-        .max-stones-table table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            background: white;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .max-stones-table th,
-        .max-stones-table td {
-            padding: 8px 6px;
-            text-align: center;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .max-stones-table th {
-            background: #5b7c99;
-            color: white;
-            font-weight: 600;
-        }
-        
-        .max-stones-table tbody tr:nth-child(even) {
-            background: #fafafa;
-        }
-        
-        .max-stones-table tbody tr:hover {
-            background: #f0f0f0;
-        }
-        
-        @media (max-width: 768px) {
-            .max-stones-table table {
-                font-size: 11px;
-            }
-            
-            .max-stones-table th,
-            .max-stones-table td {
-                padding: 6px 4px;
+            .controls-review {
+                position: sticky;
+                bottom: 16px;
+                z-index: 5;
             }
         }
 
@@ -559,78 +537,7 @@
                         <li>プログラミング初心者なので至らないところがあると思いますがどうかお許しください</li>
                     </ul>
                 </div>
-                
-                <div class="max-stones-table">
-                    <h3>各盤サイズの最大配置数</h3>
-                    <p>ざっと計算した共円を作らずに配置できる石の最大個数です。<br>ランダムな配置による計算結果のため、理論上の最大値とは異なる可能性があります。<br>この個数は確実に配置できるので、
-                        良かったら１人で黙々モードでこの個数を目指してみてください。</p>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>盤サイズ</th>
-                                    <th>最大個数</th>
-                                    <th>盤サイズ</th>
-                                    <th>最大個数</th>
-                                    <th>盤サイズ</th>
-                                    <th>最大個数</th>
-                                    <th>盤サイズ</th>
-                                    <th>最大個数</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>4×4</td><td>7個</td>
-                                    <td>12×12</td><td>21個</td>
-                                    <td>20×20</td><td>33個</td>
-                                    <td>28×28</td><td>44個</td>
-                                </tr>
-                                <tr>
-                                    <td>5×5</td><td>9個</td>
-                                    <td>13×13</td><td>23個</td>
-                                    <td>21×21</td><td>34個</td>
-                                    <td>29×29</td><td>45個</td>
-                                </tr>
-                                <tr>
-                                    <td>6×6</td><td>11個</td>
-                                    <td>14×14</td><td>24個</td>
-                                    <td>22×22</td><td>35個</td>
-                                    <td>30×30</td><td>46個</td>
-                                </tr>
-                                <tr>
-                                    <td>7×7</td><td>14個</td>
-                                    <td>15×15</td><td>26個</td>
-                                    <td>23×23</td><td>38個</td>
-                                    <td>31×31</td><td>48個</td>
-                                </tr>
-                                <tr>
-                                    <td>8×8</td><td>15個</td>
-                                    <td>16×16</td><td>27個</td>
-                                    <td>24×24</td><td>39個</td>
-                                    <td>32×32</td><td>49個</td>
-                                </tr>
-                                <tr>
-                                    <td>9×9</td><td>17個</td>
-                                    <td>17×17</td><td>28個</td>
-                                    <td>25×25</td><td>39個</td>
-                                    <td></td><td></td>
-                                </tr>
-                                <tr>
-                                    <td>10×10</td><td>19個</td>
-                                    <td>18×18</td><td>30個</td>
-                                    <td>26×26</td><td>40個</td>
-                                    <td></td><td></td>
-                                </tr>
-                                <tr>
-                                    <td>11×11</td><td>20個</td>
-                                    <td>19×19</td><td>32個</td>
-                                    <td>27×27</td><td>42個</td>
-                                    <td></td><td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+
                 
                 <div id="cocircularDetails">
                     <h3>共円の判定詳細</h3>
@@ -1737,6 +1644,72 @@
             if (Math.abs(c.im) < 1e-9) return re;
             return `${re} ${c.im >= 0 ? '+' : ''}${im}i`;
         }
+
+        function formatPointComplex(real, imag) {
+            const re = Number(real);
+            const im = Number(imag);
+
+            if (im === 0) return `${re}`;
+            if (re === 0) {
+                if (im === 1) return 'i';
+                if (im === -1) return '-i';
+                return `${im}i`;
+            }
+
+            if (im === 1) return `${re}+i`;
+            if (im === -1) return `${re}-i`;
+            return `${re}${im > 0 ? '+' : ''}${im}i`;
+        }
+
+        function toNearInteger(value, tolerance = 1e-9) {
+            const rounded = Math.round(value);
+            return Math.abs(value - rounded) < tolerance ? rounded : value;
+        }
+
+        function toFractionString(value, tolerance = 1e-9, maxDenominator = 100000) {
+            const integerCandidate = Math.round(value);
+            if (Math.abs(value - integerCandidate) < tolerance) {
+                return `${integerCandidate}`;
+            }
+
+            let bestNumerator = 0;
+            let bestDenominator = 1;
+            let bestError = Infinity;
+
+            for (let den = 1; den <= maxDenominator; den++) {
+                const num = Math.round(value * den);
+                const err = Math.abs(value - num / den);
+                if (err < bestError) {
+                    bestError = err;
+                    bestNumerator = num;
+                    bestDenominator = den;
+                }
+                if (err < tolerance) break;
+            }
+
+            if (bestError < 1e-6) {
+                const gcd = (a, b) => b === 0 ? Math.abs(a) : gcd(b, a % b);
+                const g = gcd(bestNumerator, bestDenominator) || 1;
+                const n = bestNumerator / g;
+                const d = bestDenominator / g;
+                return `\\frac{${n}}{${d}}`;
+            }
+
+            return value.toFixed(6);
+        }
+
+        function complexToLatex(c) {
+            if (!c) return '\\text{undefined}';
+            const reRaw = toNearInteger(c.re);
+            const imRaw = toNearInteger(c.im);
+            const reText = typeof reRaw === 'number' ? toFractionString(reRaw) : `${reRaw}`;
+            const imAbs = Math.abs(imRaw);
+            const imText = toFractionString(imAbs);
+            const imIsOne = Math.abs(imAbs - 1) < 1e-9;
+
+            if (Math.abs(imRaw) < 1e-9) return `${reText}`;
+            return `${reText}${imRaw >= 0 ? '+' : '-'}${imIsOne ? '' : imText}i`;
+        }
         
         function displayCocircularDetails(allCocirculars) {
             const detailsDiv = document.getElementById('cocircularDetails');
@@ -1756,38 +1729,56 @@
                 const [z1, z2, z3, z4] = points;
                 const numerator = details.numerator;
                 const denominator = details.denominator;
-                const A = toNearInteger(numerator.re);
-                const B = toNearInteger(numerator.im);
-                const C = toNearInteger(denominator.re);
-                const D = toNearInteger(denominator.im);
-                const imagNumerator = toNearInteger(B * C - A * D);
-                const imagDenominator = toNearInteger(C * C + D * D);
+                const cr = details.crossRatio;
+                const crIsReal = cr && Math.abs(cr.im) < 1e-9;
+                const ratioLatex = crIsReal
+                    ? (() => {
+                        const val = cr.re;
+                        const sign = val < -1e-9 ? '-' : '';
+                        const absLatex = complexToLatex({ re: Math.abs(val), im: 0 });
+                        return `${sign}${absLatex}`;
+                    })()
+                    : complexToLatex(cr);
+                const ratioAsFractionLatex = `\\frac{${complexToLatex(numerator)}}{${complexToLatex(denominator)}}`;
+                const normalizeLatex = (latex) => latex.replace(/\s+/g, '');
+                const shouldShowFinalValue = normalizeLatex(ratioAsFractionLatex) !== normalizeLatex(ratioLatex);
                 const isCocircular = Math.abs(details.crossRatio ? details.crossRatio.im : 1) < 1e-9;
                 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cocircular-item';
                 
                 const typeText = cocirc.type === 'line' ? '直線(半径無限大の円)' : '円';
-                const pointsText = points.map(p => `(${p.x}＋${p.y}i)`).join(', ');
+                const ratioEquationLatex = shouldShowFinalValue
+                    ? `\\[
+\\begin{aligned}
+\\frac{(z_1-z_3)(z_2-z_4)}{(z_1-z_4)(z_2-z_3)} &= ${ratioAsFractionLatex}\\\\
+&= ${ratioLatex}
+\\end{aligned}
+\\]`
+                    : `\\[
+\\begin{aligned}
+\\frac{(z_1-z_3)(z_2-z_4)}{(z_1-z_4)(z_2-z_3)} &= ${ratioAsFractionLatex}
+\\end{aligned}
+\\]`;
                 
                 itemDiv.innerHTML = `
                     <h4>共円${index + 1}: ${typeText}</h4>
-                    <div>
-                        <strong>4点:</strong> ${pointsText}<br>
-                        <strong>z₁ - z₃:</strong> ${formatComplex(details.z1_z3)}<br>
-                        <strong>z₂ - z₄:</strong> ${formatComplex(details.z2_z4)}<br>
-                        <strong>z₁ - z₄:</strong> ${formatComplex(details.z1_z4)}<br>
-                        <strong>z₂ - z₃:</strong> ${formatComplex(details.z2_z3)}<br>
-                        <strong>分子 (z₁-z₃)(z₂-z₄):</strong> ${formatComplex(details.numerator)}<br>
-                        <strong>分母 (z₁-z₄)(z₂-z₃):</strong> ${formatComplex(details.denominator)}<br>
-                        <strong>複比:</strong> ${formatComplex(details.crossRatio)}<br>
-                        <strong>虚部:</strong> ${details.crossRatio ? details.crossRatio.im.toExponential(3) : 'N/A'}<br>
-                        <strong>判定:</strong> ${details.isReal ? '共円　(∵実数)' : '虚部あり → 非共円'}
+                    <div class="cocircular-detail-content">
+                        <div class="cocircular-zline">\\(z_1=${formatPointComplex(z1.x, z1.y)},\\ z_2=${formatPointComplex(z2.x, z2.y)}\\)</div>
+                        <div class="cocircular-zline">\\(z_3=${formatPointComplex(z3.x, z3.y)},\\ z_4=${formatPointComplex(z4.x, z4.y)}\\)</div>
+                        <div class="cocircular-ratio">${ratioEquationLatex}</div>
+                        <div class="cocircular-conclusion"><strong>∴ ${isCocircular ? '共円' : '非共円'}</strong></div>
                     </div>
                 `;
                 
                 listDiv.appendChild(itemDiv);
             });
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([listDiv]).catch(err => {
+                    console.error('MathJax rendering error:', err);
+                });
+            }
         }
 
         function saveGameState() {
