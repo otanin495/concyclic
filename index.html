@@ -29,6 +29,7 @@
             min-height: 100vh;
             margin: 0;
             color: #333;
+            min-height: 100dvh;
         }
         .container {
             padding: 30px;
@@ -2452,6 +2453,10 @@
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function() {
                 drawBoard();
+                if (cachedCellWidth === 0 || cachedCellHeight === 0) {
+                    resizeTimer = setTimeout(arguments.callee, 100);
+                    return;
+                }
                 if (gameOver && savedCocirculars.length > 0 && savedLoserColor) {
                     if (savedLoserColor === '#999') {
                         savedCocirculars.forEach(cocirc => {
@@ -2459,10 +2464,15 @@
                         });
                     } else {
                         drawUnclaimedCocirculars(savedCocirculars);
+                        if (savedClaimedStones !== null && savedCocirculars.length > 0) {
+                            drawStoneHighlights(savedCocirculars[0], savedClaimedStones);
+                        }
                         savedCocirculars.forEach(cocirc => {
                             drawCircle(cocirc, savedLoserColor, 5);
                         });
                     }
+                } else if (reviewMode) {
+                    updateReviewDisplay();
                 }
             }, 100);
         });
