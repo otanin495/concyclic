@@ -671,6 +671,8 @@
         let reviewHistory = [];
         let savedWinnerMessage = '';
         let savedClaimedStones = null;
+        let cachedCellWidth = 0;
+        let cachedCellHeight = 0;
         
         function updateGridSizeFromInput() {
             const input = document.getElementById('gridSizeInput');
@@ -1301,6 +1303,8 @@
             const boardRect = board.getBoundingClientRect();
             const cellWidth = boardRect.width / gridSize;
             const cellHeight = boardRect.height / gridSize;
+            cachedCellWidth = cellWidth;
+            cachedCellHeight = cellHeight;
         
             for (let i = 0; i < gridSize; i++) {
                 const pos = i * cellWidth + cellWidth / 2;
@@ -1713,11 +1717,9 @@
         function drawCircle(cocircular, color = null, lineWidth = 3) {
             const lastPlayer = stones.length > 0 ? stones[stones.length - 1].player : currentPlayer;
             const playerColor = color || (lastPlayer === 1 ? 'rgba(214, 52, 71, 0.7)' : 'rgba(74, 124, 153, 0.7)');
-            
-            const svgWidth = svgOverlay.clientWidth;
-            const svgHeight = svgOverlay.clientHeight;
-            const cellWidth = svgWidth / gridSize;
-            const cellHeight = svgHeight / gridSize;
+
+            const cellWidth = cachedCellWidth || svgOverlay.clientWidth / gridSize;
+            const cellHeight = cachedCellHeight || svgOverlay.clientHeight / gridSize;
             
             if (cocircular.type === 'line') {
                 const points = cocircular.points;
@@ -2399,9 +2401,8 @@
         }
 
         function drawStoneHighlights(cocirc, claimedStones) {
-            const boardRect = board.getBoundingClientRect();
-            const cellWidth = boardRect.width / gridSize;
-            const cellHeight = boardRect.height / gridSize;
+            const cellWidth = cachedCellWidth || board.getBoundingClientRect().width / gridSize;
+            const cellHeight = cachedCellHeight || board.getBoundingClientRect().height / gridSize;
         
             cocirc.points.forEach(stone => {
                 const stoneX = stone.x * cellWidth + cellWidth / 2;
