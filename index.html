@@ -1293,18 +1293,23 @@
         function drawBoard() {
             board.innerHTML = '';
             svgOverlay.innerHTML = '';
-
+        
             board.style.setProperty('--grid-size', gridSize);
             board.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
             board.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
-
+        
             board.offsetHeight;
-            
-            const boardRect = board.getBoundingClientRect();
-            const cellWidth = boardRect.width / gridSize;
-            const cellHeight = boardRect.height / gridSize;
+
+            const boardWidth = board.offsetWidth;
+            const boardHeight = board.offsetHeight;
+
+            if (boardWidth === 0 || boardHeight === 0) return;
+        
+            const cellWidth = boardWidth / gridSize;
+            const cellHeight = boardHeight / gridSize;
+        
             cachedCellWidth = cellWidth;
-            cachedCellHeight = cellHeight;
+            cachedCellHeight = cellHeight;        
         
             for (let i = 0; i < gridSize; i++) {
                 const pos = i * cellWidth + cellWidth / 2;
@@ -1313,7 +1318,7 @@
                 vLine.setAttribute('x1', pos);
                 vLine.setAttribute('y1', cellHeight / 2);
                 vLine.setAttribute('x2', pos);
-                vLine.setAttribute('y2', boardRect.height - cellHeight / 2);
+                vLine.setAttribute('y2', boardHeight - cellHeight / 2);
                 vLine.setAttribute('stroke', '#d0d0d0');
                 vLine.setAttribute('stroke-width', '1');
                 svgOverlay.appendChild(vLine);
@@ -1321,7 +1326,7 @@
                 const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 hLine.setAttribute('x1', cellWidth / 2);
                 hLine.setAttribute('y1', pos);
-                hLine.setAttribute('x2', boardRect.width - cellWidth / 2);
+                hLine.setAttribute('x2', boardWidth - cellWidth / 2);
                 hLine.setAttribute('y2', pos);
                 hLine.setAttribute('stroke', '#d0d0d0');
                 hLine.setAttribute('stroke-width', '1');
