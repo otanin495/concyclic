@@ -25,18 +25,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
-            background: #f5f5f5;
+            padding: 0px;
             min-height: 100vh;
             margin: 0;
             color: #333;
         }
         .container {
-            background: white;
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            border: 1px solid #e0e0e0;
             max-width: 100%;
             width: 100%;
             max-width: 1400px;
@@ -153,13 +149,13 @@
         
         .winner-message {
             display: inline-block;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 20px;
-            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
             background: linear-gradient(135deg, #f8f9fa 0%, #e8e9eb 100%);
-            border: 3px solid;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 2px solid;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             animation: victoryPulse 0.6s ease-out;
         }
         
@@ -275,17 +271,24 @@
         
         .right-column {
             flex: 1;
+            min-width: 0;
+            width: 100%;
+            max-width: 100%; 
         }        
         
         #cocircularDetails {
-            display: none;
             margin-top: 20px;
             padding: 20px;
             background: #f8f9fa;
             border-radius: 6px;
-            border: 1px solid #e8e9eb;
-            max-height: 500px;
+            border: 1.5px dashed #ddd;
+            min-height: 600px;
+            max-height: 600px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            box-sizing: border-box; 
         }
         
         #cocircularDetails h3 {
@@ -363,7 +366,7 @@
         
         @media (max-width: 768px) {
             body {
-                padding: 12px;
+                padding: 0px;
             }
             .container {
                 padding: 20px;
@@ -392,7 +395,7 @@
         
         @media (min-width: 1024px) {
             body {
-                padding: 20px 40px;
+                padding: 0px 0px;
             }
             
             .game-layout {
@@ -407,9 +410,9 @@
             }
             
             .right-column {
-                flex: 0 0 50%;
-                max-width: 50%;
-                padding-right: 100px;
+                flex: 0 0 calc(50% - 15px);
+                max-width: calc(50% - 15px);
+                padding-right: 40px;
             }
             
             .board-container {
@@ -448,10 +451,10 @@
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 24px;
-            padding: 12px;
+            margin-top: 20px;
+            padding: 10px;
             background: #f8f9fa;
-            border-radius: 6px;
+            border-radius: 4px;
             border: 1px solid #e8e9eb;
         }
         
@@ -459,14 +462,140 @@
             min-width: 50px;
         }
 
+        #cocircularBtn.select-mode {
+            background: #27ae60;
+        }
+        #cocircularBtn.select-mode:hover {
+            background: #219a52;
+        }
+
+        .claimed-label {
+            color: #27ae60;
+            font-weight: 700;
+        }
+        .unclaimed-label {
+            color: #999;
+            font-weight: 700;
+        }
+
+        .highlight-btn {
+            padding: 4px 10px;
+            font-size: 11px;
+            background: #5b7c99;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .highlight-btn.active {
+            background: #27ae60;
+        }
+        .highlight-btn.active:hover {
+            background: #219a52;
+        }
+
+        #site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background:  #2c3e50;
+            border-bottom: 1px solid #e0e0e0;
+            height: 48px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        .site-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .hamburger {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-left: auto;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #ffffff;
+            border-radius: 2px;
+            transition: all .25s;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        
+        .drawer {
+            position: fixed;
+            top: 48px;
+            right: 0;
+            width: 80vw;
+            height: calc(100vh - 48px);
+            background: white;
+            border-left: 1px solid #e0e0e0;
+            padding: 24px 20px;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform .25s ease;
+            z-index: 99;
+        }
+        .drawer.open { transform: translateX(0); }
+
     </style>
 </head>
 <body>
+    <header id="site-header">
+        <span class="site-title">共円</span>
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleDrawer()" aria-label="メニュー">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+    
+    <div class="drawer" id="drawer">
+        <h3>ルール</h3>
+        <ul>
+            <li>同一円周上に4点以上の石が乗る配置(共円)を作ってはいけません</li>
+            <li>同一直線上の4点も半径無限大の円とみなし共円とします</li>
+            <li>共円を作っても相手に指摘されなければセーフ</li>
+            <li>指摘が誤っていれば指摘された側の勝利となります</li>
+            <li>相手が共円を作ったと思ったら「選択」ボタンで選択、その後「指摘」ボタンを押します</li>
+            <li>２人で対戦、１人で黙々モードのみ「ヒント」ボタンを押すと石を置いたら共円になるマスに×が表示されます</li>
+            <li>終局時にはその時出来た共円を作ったプレイヤーの色、指摘されていない共円をグレーで表示します<br>
+                また、履歴も表示します</li>
+        </ul>
+        <br>
+        <h4>共円の判定方法</h4>
+        <ul>
+            <li>4点が同一円周上にあるかどうかは複素数による演算で判定しています<br>
+                詳しいことは省きますが、複比を求めそれが実数ならば共円、虚数ならば共円ではないとしています<br>
+                これなら直線も共円判定を統一的に扱えるはず</li>
+            <li>計算結果は小数点以下9桁まで考慮しています</li>
+            <li>試合終了後、判定の詳細を下部に表示します</li>
+        </ul>
+        <br>
+        <h4>注意</h4>
+        <ul>
+            <li>このゲームは<strong>Claude(Anthropic)</strong>を利用して作成しました</li>
+            <li>置いた石が多すぎるとページがクラッシュすることがあります<br>
+            すみません</li>
+            <li>プログラミング初心者なので至らないところがあると思いますがどうかお許しください</li>
+        </ul>
+    </div>
+    
     <div class="container">
         <div class="game-layout">
             <div class="left-column">
-                <h1>共円</h1>
-                
+    
                 <div class="controls-wrapper">
                     <div class="controls-top">
                         <select id="gameModeSelect" onchange="changeGameMode()">
@@ -483,7 +612,7 @@
                     <div class="controls-bottom">
                         <button id="undoBtn" onclick="undo()" disabled>待った</button>
                         <button id="hintBtn" onclick="toggleHint()">ヒント</button>
-                        <button id="cocircularBtn" onclick="checkCocircularClaim()" disabled>指摘</button>
+                        <button id="cocircularBtn" onclick="handleCocircularBtn()" disabled>選択</button>
                     </div>
                 </div>
                 
@@ -497,7 +626,7 @@
                 <div class="info" id="info">
                     <span class="player1">プレイヤー1</span>のターン
                 </div>
-
+    
                 <div class="controls-review" id="reviewControls" style="display: none;">
                     <button onclick="reviewFirst()">❙◀</button>
                     <button onclick="reviewPrev()">◀</button>
@@ -507,43 +636,14 @@
             </div>
             
             <div class="right-column">
-                
-                <div class="rules">
-                    <h3>ルール</h3>
-                    <ul>
-                        <li>同一円周上に4点以上の石が乗る配置(共円)を作ってはいけません</li>
-                        <li>同一直線上の4点も共円と見なします(半径無限の円)</li>
-                        <li>ただし共円を作っても相手に指摘されなければセーフ</li>
-                        <li>相手が共円を作ったと思ったら「指摘」ボタンを押します</li>
-                        <li>２人で対戦、１人で黙々モードのみ「ヒント」ボタンを押すと石を置いたら共円になるマスに×が表示されます</li>
-                        <li>終局時にはその時出来た共円を作ったプレイヤーの色、指摘されていない共円をグレーで表示します<br>
-                            また、履歴も表示します</li>
-                    </ul>
-                    <br>
-                    <h4>共円の判定方法</h4>
-                    <ul>
-                        <li>4点が同一円周上にあるかどうかは複素数による演算で判定しています<br>
-                            詳しいことは省きますが、複比を求めそれが実数ならば共円、虚数ならば共円ではないとしています<br>
-                            これなら直線も共円判定を統一的に扱えるはず</li>
-                        <li>計算結果は小数点以下9桁まで考慮しています</li>
-                        <li>試合終了後、判定の詳細を下部に表示します</li>
-                    </ul>
-                    <br>
-                    <h4>注意</h4>
-                    <ul>
-                        <li>このゲームは<strong>Claude(Anthropic)</strong>を利用して作成しました</li>
-                        <li>置いた石が多すぎるとページがクラッシュすることがあります<br>
-                        すみません</li>
-                        <li>プログラミング初心者なので至らないところがあると思いますがどうかお許しください</li>
-                    </ul>
-                </div>
-
-                
                 <div id="cocircularDetails">
-                    <h3>共円の判定詳細</h3>
+                    <p id="cocircularPlaceholder" style="color: #8e8e8e; font-size: 16px; text-align: center; margin: auto; width: 100%;">
+                        終局後に判定詳細が表示されます
+                    </p>
+                    <h3 style="display:none" id="cocircularTitle">共円の判定詳細</h3>
                     <div id="cocircularList"></div>
                 </div>
-            </div>
+            </div> 
         </div>
     </div>
 
@@ -563,10 +663,14 @@
         let savedCocirculars = [];
         let savedLoserColor = null;
         let lastPlacedStone = null;
+        let selectMode = false;
+        let selectedPoints = [];
+        let highlightedCocircularIndex = null;
         let reviewMode = false;
         let reviewIndex = 0;
         let reviewHistory = [];
         let savedWinnerMessage = '';
+        let savedClaimedStones = null;
         
         function updateGridSizeFromInput() {
             const input = document.getElementById('gridSizeInput');
@@ -596,7 +700,6 @@
 
         function setCocircularDetailsVisible(visible) {
             const detailsDiv = document.getElementById('cocircularDetails');
-            detailsDiv.style.display = visible ? 'block' : 'none';
             document.body.classList.toggle('details-open', visible);
         }
         
@@ -622,6 +725,7 @@
             savedLoserColor = null;
             lastPlacedStone = null;
             savedWinnerMessage = '';
+            savedClaimedStones = null;
             updateUndoButton();
             updateCocircularButton();
             updateHintButton();
@@ -630,7 +734,11 @@
             hintBtn.classList.remove('active');
             setCocircularDetailsVisible(false);
             const listDiv = document.getElementById('cocircularList');
-            listDiv.innerHTML = '';    
+            listDiv.innerHTML = '';
+            const placeholder = document.getElementById('cocircularPlaceholder');
+            if (placeholder) placeholder.style.display = 'block';
+            const title = document.getElementById('cocircularTitle');
+            if (title) title.style.display = 'none';
             infoDiv.innerHTML = '';
             reviewMode = false;
             reviewIndex = 0;
@@ -852,6 +960,10 @@
         
         function updateCocircularButton() {
             const cocircularBtn = document.getElementById('cocircularBtn');
+            if (selectMode) {
+                cocircularBtn.disabled = false;
+                return;
+            }
             cocircularBtn.disabled = stones.length === 0 || gameOver || gameMode === 'solo';
         }
         
@@ -874,49 +986,80 @@
         }
         
         function checkCocircularClaim() {
-            if (stones.length === 0 || gameOver || isShowingMessage || gameMode === 'solo') return;
-            
-            isShowingMessage = true;
-            updateInfo();
-            const lastStone = stones[stones.length - 1];
+            if (selectedPoints.length !== 4 || gameOver || isShowingMessage || gameMode === 'solo') return;
+        
+            const selectedStones = selectedPoints.map(p => stones.find(s => s.x === p.x && s.y === p.y));
+            const lastStone = selectedStones.reduce((latest, s) => {
+                return stones.indexOf(s) > stones.indexOf(latest) ? s : latest;
+            });
             const loserPlayer = lastStone.player;
             const claimer = loserPlayer === 1 ? 2 : 1;
-            const cocircular = checkCocircularForStones(stones, lastStone);
-            
+        
+            const claimedStonesSnapshot = [...selectedStones];
+        
+            selectMode = false;
+            selectedPoints = [];
+            const btn = document.getElementById('cocircularBtn');
+            btn.textContent = '選択';
+            btn.classList.remove('select-mode');
+        
+            isShowingMessage = true;
+            updateInfo();
+        
+            const cocircular = areCocircular(selectedStones);
+        
             if (cocircular) {
                 gameOver = true;
                 const winner = claimer;
                 const loserColor = loserPlayer === 1 ? '#d63447' : '#4a7c99';
-            
+        
                 showHint = false;
                 const hintBtn = document.getElementById('hintBtn');
                 hintBtn.textContent = 'ヒント';
                 hintBtn.classList.remove('active');
-                
-                drawBoard();
-                
-                const allNewCocirculars = findAllCocircularsWithStone(stones, lastStone);
+        
+                const isLine = areCollinearExact(selectedStones);
+                const circle = isLine ? null : findCircleExact(selectedStones[0], selectedStones[1], selectedStones[2]);
+        
+                let allPointsOnShape;
+                if (isLine) {
+                    const [p1, p2] = selectedStones;
+                    allPointsOnShape = stones.filter(p =>
+                        Math.abs((p2.x - p1.x) * (p.y - p1.y) - (p2.y - p1.y) * (p.x - p1.x)) < 1e-9
+                    );
+                } else {
+                    allPointsOnShape = stones.filter(p => {
+                        const dist = Math.sqrt((p.x - circle.cx) ** 2 + (p.y - circle.cy) ** 2);
+                        return Math.abs(dist - circle.r) < 1e-6;
+                    });
+                }
+                const allNewCocirculars = [{ type: isLine ? 'line' : 'circle', points: allPointsOnShape, circle }];
+        
                 savedCocirculars = allNewCocirculars;
+                savedClaimedStones = claimedStonesSnapshot;
                 savedLoserColor = loserColor;
-                
+        
+                drawBoard();
                 drawUnclaimedCocirculars(allNewCocirculars);
+                drawStoneHighlights(allNewCocirculars[0], claimedStonesSnapshot);
                 allNewCocirculars.forEach(cocirc => {
                     drawCircle(cocirc, loserColor, 5);
                 });
-                
+        
                 showMessageOverlay('共円！', loserColor, () => {
                     if (!gameOver) return;
-                    
+        
                     drawBoard();
                     drawUnclaimedCocirculars(allNewCocirculars);
+                    drawStoneHighlights(allNewCocirculars[0], claimedStonesSnapshot);
                     allNewCocirculars.forEach(cocirc => {
                         drawCircle(cocirc, loserColor, 5);
                     });
-            
+        
                     if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                         const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                         const aiPlayer = humanPlayer === 1 ? 2 : 1;
-                    
+        
                         if (loserPlayer === aiPlayer) {
                             savedWinnerMessage = `<div class="winner-message winner${humanPlayer}">あなたの勝ち</div>`;
                             infoDiv.innerHTML = savedWinnerMessage;
@@ -928,48 +1071,53 @@
                         savedWinnerMessage = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
                         infoDiv.innerHTML = savedWinnerMessage;
                     }
-            
-                    displayCocircularDetails(allNewCocirculars);
+        
+                    const allOnBoard = findAllCocirculars(stones);
+                    const othersOnBoard = allOnBoard.filter(c =>
+                        !allNewCocirculars.some(claimed =>
+                            claimed.points.every(cp => c.points.some(p => p.x === cp.x && p.y === cp.y)) &&
+                            c.points.every(p => claimed.points.some(cp => cp.x === p.x && cp.y === p.y))
+                        )
+                    );
+                    displayCocircularDetails([...allNewCocirculars, ...othersOnBoard], allNewCocirculars);
                     enableReviewMode();
                     saveGameState();
                     isShowingMessage = false;
                 });
-                
+        
                 updateCocircularButton();
                 updateUndoButton();
                 updateHintButton();
             } else {
                 gameOver = true;
                 const winner = loserPlayer;
-            
+        
                 showHint = false;
                 const hintBtn = document.getElementById('hintBtn');
                 hintBtn.textContent = 'ヒント';
                 hintBtn.classList.remove('active');
-                
+        
                 drawBoard();
-            
+        
                 const allExistingCocirculars = findAllCocirculars(stones);
-                const unrelatedCocirculars = allExistingCocirculars.filter(cocirc => 
-                    !cocirc.points.some(p => p.x === lastStone.x && p.y === lastStone.y)
-                );
-                
+                const unrelatedCocirculars = allExistingCocirculars;
+
                 savedCocirculars = unrelatedCocirculars;
                 savedLoserColor = '#999';
-                
+        
                 drawUnclaimedCocirculars([]);
-                
+        
                 showMessageOverlay('No 共円…', '#999', () => {
                     drawBoard();
-            
+        
                     unrelatedCocirculars.forEach(cocirc => {
                         drawCircle(cocirc, '#999', 2);
                     });
-                    
+        
                     if (gameMode === 'ai-first' || gameMode === 'ai-second') {
                         const humanPlayer = gameMode === 'ai-first' ? 1 : 2;
                         const aiPlayer = humanPlayer === 1 ? 2 : 1;
-                    
+        
                         if (claimer === humanPlayer) {
                             savedWinnerMessage = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div>`;
                             infoDiv.innerHTML = savedWinnerMessage;
@@ -981,11 +1129,15 @@
                         savedWinnerMessage = `<div class="winner-message winner${winner}">プレイヤー${winner}の勝利！</div>`;
                         infoDiv.innerHTML = savedWinnerMessage;
                     }
+
+                    const allOnBoardNoClaim = findAllCocirculars(stones);
+                    displayCocircularDetails(allOnBoardNoClaim, []);
+        
                     enableReviewMode();
                     saveGameState();
                     isShowingMessage = false;
                 });
-                
+        
                 updateCocircularButton();
                 updateUndoButton();
                 updateHintButton();
@@ -1028,8 +1180,11 @@
                                     
                                     if (!seenLines.has(lineKey)) {
                                         seenLines.add(lineKey);
-                                        cocirculars.push({ type: 'line', points });
-                                    }
+                                        const allOnLine = stoneArray.filter(p =>
+                                            Math.abs((p2.x - p1.x) * (p.y - p1.y) - (p2.y - p1.y) * (p.x - p1.x)) < 1e-9
+                                        );
+                                        cocirculars.push({ type: 'line', points: allOnLine });
+                                                                            }
                                 } else {
                                     const circle = findCircleExact(points[0], points[1], points[2]);
                                     if (circle) {
@@ -1037,7 +1192,11 @@
                                         
                                         if (!seenCircles.has(circleKey)) {
                                             seenCircles.add(circleKey);
-                                            cocirculars.push({ type: 'circle', points, circle });
+                                            const allOnCircle = stoneArray.filter(p => {
+                                                const dist = Math.sqrt((p.x - circle.cx) ** 2 + (p.y - circle.cy) ** 2);
+                                                return Math.abs(dist - circle.r) < 1e-6;
+                                            });
+                                            cocirculars.push({ type: 'circle', points: allOnCircle, circle });
                                         }
                                     }
                                 }
@@ -1213,6 +1372,17 @@
                 stoneCircle.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))';
                 svgOverlay.appendChild(stoneCircle);
 
+                if (selectMode && selectedPoints.some(p => p.x === stone.x && p.y === stone.y)) {
+                    const selectCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    selectCircle.setAttribute('cx', stoneX);
+                    selectCircle.setAttribute('cy', stoneY);
+                    selectCircle.setAttribute('r', stoneRadius * 1.6);
+                    selectCircle.setAttribute('fill', 'none');
+                    selectCircle.setAttribute('stroke', '#27ae60');
+                    selectCircle.setAttribute('stroke-width', '3');
+                    svgOverlay.appendChild(selectCircle);
+                }
+
                 if (lastPlacedStone && stone.x === lastPlacedStone.x && stone.y === lastPlacedStone.y) {
                     const highlightCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                     highlightCircle.setAttribute('cx', stoneX);
@@ -1264,6 +1434,28 @@
         }
         
         function handleCellClick(x, y, isAIMove = false) {
+            if (selectMode && !isAIMove) {
+                const stoneExists = stones.some(s => s.x === x && s.y === y);
+                if (!stoneExists) return;
+        
+                const existingIndex = selectedPoints.findIndex(p => p.x === x && p.y === y);
+                if (existingIndex >= 0) {
+                    selectedPoints.splice(existingIndex, 1);
+                } else if (selectedPoints.length < 4) {
+                    selectedPoints.push({ x, y });
+                }
+        
+                const btn = document.getElementById('cocircularBtn');
+                const count = selectedPoints.length;
+                if (count === 4) {
+                    btn.textContent = '指摘';
+                } else {
+                    btn.textContent = `選択中（${count}/4）`;
+                }
+        
+                drawBoard();
+                return;
+            }
             if (gameOver || isShowingMessage || reviewMode) return;
             if (stones.some(s => s.x === x && s.y === y)) return;
         
@@ -1313,7 +1505,7 @@
                     const finalStoneCount = stones.length;
                     savedWinnerMessage = `<div class="winner-message winner2">ゲーム終了</div><br><br><span style="font-size: 14px; color: #666;">共円を作らずに配置出来た石数: ${finalStoneCount - 1}個</span>`;
                     infoDiv.innerHTML = savedWinnerMessage;
-                    displayCocircularDetails(allNewCocirculars);
+                    displayCocircularDetails(findAllCocirculars(stones), allNewCocirculars);
                     enableReviewMode();
                     isShowingMessage = false;
                 });
@@ -1358,7 +1550,7 @@
                         const aiPlayer = humanPlayer === 1 ? 2 : 1;
                         savedWinnerMessage = `<div class="winner-message winner${aiPlayer}">AIの勝ち</div>`;
                         infoDiv.innerHTML = savedWinnerMessage;
-                        displayCocircularDetails(allNewCocirculars);
+                        displayCocircularDetails(findAllCocirculars(stones), allNewCocirculars);
                         enableReviewMode();
                         isShowingMessage = false;
                     });
@@ -1706,14 +1898,22 @@
             const imAbs = Math.abs(imRaw);
             const imText = toFractionString(imAbs);
             const imIsOne = Math.abs(imAbs - 1) < 1e-9;
-
+        
             if (Math.abs(imRaw) < 1e-9) return `${reText}`;
+
+            if (Math.abs(reRaw) < 1e-9) {
+                if (imRaw < 0) return `-${imIsOne ? '' : imText}i`;
+                return `${imIsOne ? '' : imText}i`;
+            }
+        
             return `${reText}${imRaw >= 0 ? '+' : '-'}${imIsOne ? '' : imText}i`;
         }
         
-        function displayCocircularDetails(allCocirculars) {
+        function displayCocircularDetails(allCocirculars, claimedCocirculars = []) {
             const detailsDiv = document.getElementById('cocircularDetails');
             const listDiv = document.getElementById('cocircularList');
+            document.getElementById('cocircularPlaceholder').style.display = 'none';
+            document.getElementById('cocircularTitle').style.display = 'block';
             
             if (allCocirculars.length === 0) {
                 setCocircularDetailsVisible(false);
@@ -1724,7 +1924,7 @@
             listDiv.innerHTML = '';
             
             allCocirculars.forEach((cocirc, index) => {
-                const points = cocirc.points;
+                const points = cocirc.points.slice(0, 4);
                 const details = getCrossRatioDetails(points);
                 const [z1, z2, z3, z4] = points;
                 const numerator = details.numerator;
@@ -1747,29 +1947,42 @@
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cocircular-item';
                 
+                const isClaimed = claimedCocirculars.some(c =>
+                    c.points.length === cocirc.points.length &&
+                    c.points.every(cp => cocirc.points.some(p => p.x === cp.x && p.y === cp.y))
+                );
                 const typeText = cocirc.type === 'line' ? '直線(半径無限大の円)' : '円';
+                const claimedLabel = isClaimed ? '【指摘】' : '【その他】';
                 const ratioEquationLatex = shouldShowFinalValue
                     ? `\\[
-\\begin{aligned}
-\\frac{(z_1-z_3)(z_2-z_4)}{(z_1-z_4)(z_2-z_3)} &= ${ratioAsFractionLatex}\\\\
-&= ${ratioLatex}
-\\end{aligned}
-\\]`
-                    : `\\[
-\\begin{aligned}
-\\frac{(z_1-z_3)(z_2-z_4)}{(z_1-z_4)(z_2-z_3)} &= ${ratioAsFractionLatex}
-\\end{aligned}
-\\]`;
+                    \\begin{aligned}
+                    \\frac{(z_1-z_3)(z_2-z_4)}{(z_1-z_4)(z_2-z_3)} &= ${ratioAsFractionLatex}\\\\
+                    &= ${ratioLatex}
+                    \\end{aligned}
+                    \\]`
+                                        : `\\[
+                    \\begin{aligned}
+                    \\frac{(z_1-z_3)(z_2-z_4)}{(z_1-z_4)(z_2-z_3)} &= ${ratioAsFractionLatex}
+                    \\end{aligned}
+                    \\]`;
                 
-                itemDiv.innerHTML = `
-                    <h4>共円${index + 1}: ${typeText}</h4>
-                    <div class="cocircular-detail-content">
-                        <div class="cocircular-zline">\\(z_1=${formatPointComplex(z1.x, z1.y)},\\ z_2=${formatPointComplex(z2.x, z2.y)}\\)</div>
-                        <div class="cocircular-zline">\\(z_3=${formatPointComplex(z3.x, z3.y)},\\ z_4=${formatPointComplex(z4.x, z4.y)}\\)</div>
-                        <div class="cocircular-ratio">${ratioEquationLatex}</div>
-                        <div class="cocircular-conclusion"><strong>∴ ${isCocircular ? '共円' : '非共円'}</strong></div>
-                    </div>
-                `;
+                    const allPoints = cocirc.points;
+                    const allPointsLatex = allPoints.map((p, i) =>
+                        `\\(z_{${i + 1}}=${formatPointComplex(p.x, p.y)}\\)`
+                    ).join(', ');
+                    
+                    const highlightBtnHtml = !isClaimed
+                        ? `<button class="highlight-btn" data-index="${index}" onclick="toggleHighlight(${index})">ハイライト</button>`
+                        : '';
+
+                    itemDiv.innerHTML = `
+                        <h4><span class="${isClaimed ? 'claimed-label' : 'unclaimed-label'}">${claimedLabel}</span> 共円${index + 1}: ${typeText}（${allPoints.length}点）${highlightBtnHtml}</h4>
+                        <div class="cocircular-detail-content">
+                            <div class="cocircular-zline">${allPointsLatex}</div>
+                            <div class="cocircular-ratio">${ratioEquationLatex}</div>
+                            <div class="cocircular-conclusion"><strong>∴ ${isCocircular ? '共円' : '非共円'}</strong></div>
+                        </div>
+                    `;
                 
                 listDiv.appendChild(itemDiv);
             });
@@ -1795,6 +2008,7 @@
                 lastPlacedStone: lastPlacedStone,
                 savedWinnerMessage: savedWinnerMessage,
                 reviewMode: reviewMode,
+                savedClaimedStones: savedClaimedStones,
                 reviewHistory: reviewHistory,
                 reviewIndex: reviewIndex
             };
@@ -1822,6 +2036,7 @@
                 reviewMode = state.reviewMode || false;
                 reviewHistory = state.reviewHistory || [];
                 reviewIndex = state.reviewIndex || 0;
+                savedClaimedStones = state.savedClaimedStones || null;
         
                 document.getElementById('gameModeSelect').value = gameMode;
                 document.getElementById('gridSizeInput').value = gridSize;
@@ -1857,7 +2072,7 @@
                     }
 
                     if (savedCocirculars.length > 0) {
-                        displayCocircularDetails(savedCocirculars);
+                        displayCocircularDetails(savedCocirculars, []);
                     }
 
                     if (reviewMode && reviewHistory.length > 0) {
@@ -1882,19 +2097,19 @@
             const cocirculars = [];
             const seenCircles = new Set();
             const seenLines = new Set();
-            
+        
             for (let i = 0; i < n; i++) {
                 for (let j = i + 1; j < n; j++) {
                     for (let k = j + 1; k < n; k++) {
                         for (let l = k + 1; l < n; l++) {
                             const points = [stoneArray[i], stoneArray[j], stoneArray[k], stoneArray[l]];
-                            
+        
                             if (areCocircular(points)) {
                                 if (areCollinearExact(points)) {
                                     const [p1, p2] = points;
                                     const dx = p2.x - p1.x;
                                     const dy = p2.y - p1.y;
-                                    
+        
                                     let lineKey;
                                     if (Math.abs(dx) < 1e-9) {
                                         lineKey = `v_${p1.x.toFixed(6)}`;
@@ -1903,19 +2118,26 @@
                                         const intercept = p1.y - slope * p1.x;
                                         lineKey = `s_${slope.toFixed(6)}_${intercept.toFixed(6)}`;
                                     }
-                                    
+        
                                     if (!seenLines.has(lineKey)) {
                                         seenLines.add(lineKey);
-                                        cocirculars.push({ type: 'line', points });
+                                        const allOnLine = stoneArray.filter(p =>
+                                            Math.abs((p2.x - p1.x) * (p.y - p1.y) - (p2.y - p1.y) * (p.x - p1.x)) < 1e-9
+                                        );
+                                        cocirculars.push({ type: 'line', points: allOnLine });
                                     }
                                 } else {
                                     const circle = findCircleExact(points[0], points[1], points[2]);
                                     if (circle) {
-                                        const circleKey = `${circle.cx.toFixed(6)}_${circle.cy.toFixed(6)}_${circle.r.toFixed(6)}`;
-                                        
+                                        const circleKey = `${circle.cx.toFixed(3)}_${circle.cy.toFixed(3)}_${circle.r.toFixed(3)}`;
+        
                                         if (!seenCircles.has(circleKey)) {
                                             seenCircles.add(circleKey);
-                                            cocirculars.push({ type: 'circle', points, circle });
+                                            const allOnCircle = stoneArray.filter(p => {
+                                                const dist = Math.sqrt((p.x - circle.cx) ** 2 + (p.y - circle.cy) ** 2);
+                                                return Math.abs(dist - circle.r) < 1e-6;
+                                            });
+                                            cocirculars.push({ type: 'circle', points: allOnCircle, circle });
                                         }
                                     }
                                 }
@@ -1999,12 +2221,15 @@
                         });
                     } else {
                         drawUnclaimedCocirculars(savedCocirculars);
+                        if (savedClaimedStones !== null) {
+                            drawStoneHighlights(savedCocirculars[0], savedClaimedStones);
+                        }
                         savedCocirculars.forEach(cocirc => {
                             drawCircle(cocirc, savedLoserColor, 5);
                         });
                     }
                 }
-
+            
                 infoDiv.innerHTML = savedWinnerMessage;
             } else {
                 const allCocircularsAtThisPoint = findAllCocirculars(stones);
@@ -2095,6 +2320,112 @@
                 nextBtn.disabled = false;
                 lastBtn.disabled = false;
             }
+        }
+
+        function handleCocircularBtn() {
+            if (selectMode && selectedPoints.length === 4) {
+                checkCocircularClaim();
+            } else {
+                toggleSelectMode();
+            }
+        }
+
+        function toggleSelectMode() {
+            if (gameOver || isShowingMessage || gameMode === 'solo') return;
+        
+            selectMode = !selectMode;
+            selectedPoints = [];
+        
+            const btn = document.getElementById('cocircularBtn');
+            if (selectMode) {
+                btn.textContent = '選択中（0/4）';
+                btn.classList.add('select-mode');
+            } else {
+                btn.textContent = '選択';
+                btn.classList.remove('select-mode');
+            }
+            drawBoard();
+        }
+
+        function toggleHighlight(index) {
+            const allOnBoard = findAllCocirculars(stones);
+            const allCocirculars = (() => {
+                if (savedLoserColor === '#999') {
+                    return allOnBoard;
+                } else {
+                    const claimed = savedCocirculars;
+                    const others = allOnBoard.filter(c =>
+                        !claimed.some(cl =>
+                            cl.points.every(cp => c.points.some(p => p.x === cp.x && p.y === cp.y)) &&
+                            c.points.every(p => cl.points.some(cp => cp.x === p.x && cp.y === p.y))
+                        )
+                    );
+                    return [...claimed, ...others];
+                }
+            })();
+        
+            if (highlightedCocircularIndex === index) {
+                highlightedCocircularIndex = null;
+            } else {
+                highlightedCocircularIndex = index;
+            }
+        
+            document.querySelectorAll('.highlight-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.index) === highlightedCocircularIndex);
+            });
+        
+            drawBoard();
+        
+            if (highlightedCocircularIndex === null) {
+                if (savedLoserColor === '#999') {
+                    allCocirculars.forEach(c => drawCircle(c, '#999', 2));
+                } else {
+                    drawUnclaimedCocirculars(savedCocirculars);
+                    if (savedCocirculars.length > 0 && savedClaimedStones !== null) {
+                        drawStoneHighlights(savedCocirculars[0], savedClaimedStones);
+                    }
+                    savedCocirculars.forEach(c => drawCircle(c, savedLoserColor, 5));
+                }
+            } else {
+                allCocirculars.forEach((c, i) => {
+                    if (i !== highlightedCocircularIndex) {
+                        drawCircle(c, '#ccc', 2);
+                    }
+                });
+                const target = allCocirculars[highlightedCocircularIndex];
+                drawStoneHighlights(target, null);
+                drawCircle(target, '#27ae60', 4);
+            }
+        }
+
+        function drawStoneHighlights(cocirc, claimedStones) {
+            const boardRect = board.getBoundingClientRect();
+            const cellWidth = boardRect.width / gridSize;
+            const cellHeight = boardRect.height / gridSize;
+        
+            cocirc.points.forEach(stone => {
+                const stoneX = stone.x * cellWidth + cellWidth / 2;
+                const stoneY = stone.y * cellHeight + cellHeight / 2;
+                const stoneRadius = Math.min(10, cellWidth * 0.16);
+        
+                const isClaimed = claimedStones !== null && claimedStones.some(s => s.x === stone.x && s.y === stone.y);
+                const color = (claimedStones === null || isClaimed) ? '#27ae60' : '#e67e22';
+        
+                const highlightCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                highlightCircle.setAttribute('cx', stoneX);
+                highlightCircle.setAttribute('cy', stoneY);
+                highlightCircle.setAttribute('r', stoneRadius * 1.7);
+                highlightCircle.setAttribute('fill', 'none');
+                highlightCircle.setAttribute('stroke', color);
+                highlightCircle.setAttribute('stroke-width', '3');
+                highlightCircle.setAttribute('opacity', '0.9');
+                svgOverlay.appendChild(highlightCircle);
+            });
+        }
+
+        function toggleDrawer() {
+            document.getElementById('hamburgerBtn').classList.toggle('open');
+            document.getElementById('drawer').classList.toggle('open');
         }
         
         initGame();
