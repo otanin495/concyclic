@@ -2383,27 +2383,34 @@
             });
         
             drawBoard();
-        
-            if (highlightedCocircularIndex === null) {
-                if (savedLoserColor === '#999') {
-                    allCocirculars.forEach(c => drawCircle(c, '#999', 2));
-                } else {
-                    drawUnclaimedCocirculars(savedCocirculars);
-                    if (savedCocirculars.length > 0 && savedClaimedStones !== null) {
-                        drawStoneHighlights(savedCocirculars[0], savedClaimedStones);
-                    }
-                    savedCocirculars.forEach(c => drawCircle(c, savedLoserColor, 5));
+
+            const doHighlightDraw = () => {
+                if (cachedCellWidth === 0 || cachedCellHeight === 0) {
+                    setTimeout(doHighlightDraw, 50);
+                    return;
                 }
-            } else {
-                allCocirculars.forEach((c, i) => {
-                    if (i !== highlightedCocircularIndex) {
-                        drawCircle(c, '#ccc', 2);
+                if (highlightedCocircularIndex === null) {
+                    if (savedLoserColor === '#999') {
+                        allCocirculars.forEach(c => drawCircle(c, '#999', 2));
+                    } else {
+                        drawUnclaimedCocirculars(savedCocirculars);
+                        if (savedCocirculars.length > 0 && savedClaimedStones !== null) {
+                            drawStoneHighlights(savedCocirculars[0], savedClaimedStones);
+                        }
+                        savedCocirculars.forEach(c => drawCircle(c, savedLoserColor, 5));
                     }
-                });
-                const target = allCocirculars[highlightedCocircularIndex];
-                drawStoneHighlights(target, null);
-                drawCircle(target, '#27ae60', 4);
-            }
+                } else {
+                    allCocirculars.forEach((c, i) => {
+                        if (i !== highlightedCocircularIndex) {
+                            drawCircle(c, '#ccc', 2);
+                        }
+                    });
+                    const target = allCocirculars[highlightedCocircularIndex];
+                    drawStoneHighlights(target, null);
+                    drawCircle(target, '#27ae60', 4);
+                }
+            };
+            doHighlightDraw();
         }
 
         function drawStoneHighlights(cocirc, claimedStones) {
@@ -2458,18 +2465,35 @@
                     return;
                 }
                 if (gameOver && savedCocirculars.length > 0 && savedLoserColor) {
-                    if (savedLoserColor === '#999') {
-                        savedCocirculars.forEach(cocirc => {
-                            drawCircle(cocirc, '#999', 2);
+                    if (highlightedCocircularIndex !== null) {
+                        const allOnBoard = findAllCocirculars(stones);
+                        const allCocirculars = savedLoserColor === '#999'
+                            ? allOnBoard
+                            : (() => {
+                                const others = allOnBoard.filter(c =>
+                                    !savedCocirculars.some(cl =>
+                                        cl.points.every(cp => c.points.some(p => p.x === cp.x && p.y === cp.y)) &&
+                                        c.points.every(p => cl.points.some(cp => cp.x === p.x && cp.y === p.y))
+                                    )
+                                );
+                                return [...savedCocirculars, ...others];
+                            })();
+                        allCocirculars.forEach((c, i) => {
+                            if (i !== highlightedCocircularIndex) drawCircle(c, '#ccc', 2);
                         });
+                        const target = allCocirculars[highlightedCocircularIndex];
+                        if (target) {
+                            drawStoneHighlights(target, null);
+                            drawCircle(target, '#27ae60', 4);
+                        }
+                    } else if (savedLoserColor === '#999') {
+                        savedCocirculars.forEach(cocirc => drawCircle(cocirc, '#999', 2));
                     } else {
                         drawUnclaimedCocirculars(savedCocirculars);
                         if (savedClaimedStones !== null && savedCocirculars.length > 0) {
                             drawStoneHighlights(savedCocirculars[0], savedClaimedStones);
                         }
-                        savedCocirculars.forEach(cocirc => {
-                            drawCircle(cocirc, savedLoserColor, 5);
-                        });
+                        savedCocirculars.forEach(cocirc => drawCircle(cocirc, savedLoserColor, 5));
                     }
                 } else if (reviewMode) {
                     updateReviewDisplay();
