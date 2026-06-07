@@ -540,7 +540,7 @@
             position: fixed;
             top: 48px;
             right: 0;
-            width: 80vw;
+            width: 100vw;
             height: calc(100vh - 48px);
             background: white;
             border-left: 1px solid #e0e0e0;
@@ -580,8 +580,7 @@
             <li>4点が同一円周上にあるかどうかは複素数による演算で判定しています<br>
                 詳しいことは省きますが、複比を求めそれが実数ならば共円、虚数ならば共円ではないとしています<br>
                 これなら直線も共円判定を統一的に扱えるはず</li>
-            <li>計算結果は小数点以下9桁まで考慮しています</li>
-            <li>試合終了後、判定の詳細を下部に表示します</li>
+            <li>計算結果は小数点以下9桁まで考慮しています(判定詳細はきれいに見えるように分数や整数で表示)</li>
         </ul>
         <br>
         <h4>注意</h4>
@@ -705,6 +704,16 @@
             const detailsDiv = document.getElementById('cocircularDetails');
             document.body.classList.toggle('details-open', visible);
         }
+
+        function clearCocircularDetails() {
+            const listDiv = document.getElementById('cocircularList');
+            listDiv.innerHTML = '';
+            const placeholder = document.getElementById('cocircularPlaceholder');
+            if (placeholder) placeholder.style.display = 'block';
+            const title = document.getElementById('cocircularTitle');
+            if (title) title.style.display = 'none';
+            setCocircularDetailsVisible(false);
+        }
         
         function initGame() {
             const existingOverlay = document.querySelector('.message-overlay');
@@ -736,13 +745,7 @@
             hintBtn.textContent = 'ヒント';
             hintBtn.classList.remove('active');
             setCocircularDetailsVisible(false);
-            const listDiv = document.getElementById('cocircularList');
-            listDiv.innerHTML = '';
-            const placeholder = document.getElementById('cocircularPlaceholder');
-            if (placeholder) placeholder.style.display = 'block';
-            const title = document.getElementById('cocircularTitle');
-            if (title) title.style.display = 'none';
-            infoDiv.innerHTML = '';
+            clearCocircularDetails();
             reviewMode = false;
             reviewIndex = 0;
             reviewHistory = [];
@@ -827,6 +830,7 @@
                     savedLoserColor = null;
                     savedWinnerMessage = '';
                     setCocircularDetailsVisible(false);
+                    clearCocircularDetails();
                     showHint = false;
                     const hintBtn = document.getElementById('hintBtn');
                     hintBtn.textContent = 'ヒント';
@@ -901,6 +905,7 @@
                 savedLoserColor = null;
                 savedWinnerMessage = '';
                 setCocircularDetailsVisible(false);
+                clearCocircularDetails();
                 showHint = false;
                 const hintBtn = document.getElementById('hintBtn');
                 hintBtn.textContent = 'ヒント';
@@ -1980,7 +1985,7 @@
                     ).join(', ');
                     
                     const highlightBtnHtml = !isClaimed
-                        ? `<button class="highlight-btn" data-index="${index}" onclick="toggleHighlight(${index})">ハイライト</button>`
+                        ? `<button class="highlight-btn" data-index="${index}" onclick="toggleHighlight(${index})" disabled>ハイライト</button>`
                         : '';
 
                     itemDiv.innerHTML = `
@@ -1994,6 +1999,12 @@
                 
                 listDiv.appendChild(itemDiv);
             });
+
+            if (reviewIndex === reviewHistory.length - 1 || !reviewMode) {
+                document.querySelectorAll('.highlight-btn').forEach(btn => {
+                    btn.disabled = false;
+                });
+            }
 
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([listDiv]).catch(err => {
@@ -2222,6 +2233,9 @@
             updateReviewButtons();
 
             if (reviewIndex === reviewHistory.length - 1) {
+                document.querySelectorAll('.highlight-btn').forEach(btn => {
+                    btn.disabled = false;
+                });
                 if (savedCocirculars.length > 0 && savedLoserColor) {
                     if (savedLoserColor === '#999') {
                         savedCocirculars.forEach(cocirc => {
@@ -2240,6 +2254,11 @@
             
                 infoDiv.innerHTML = savedWinnerMessage;
             } else {
+                highlightedCocircularIndex = null;
+                document.querySelectorAll('.highlight-btn').forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.remove('active');
+                });
                 const allCocircularsAtThisPoint = findAllCocirculars(stones);
                 
                 allCocircularsAtThisPoint.forEach(cocirc => {
